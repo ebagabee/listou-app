@@ -6,7 +6,7 @@ export default function WelcomePage() {
     return (
         <SafeAreaView>
             <View>
-                <Text>Welcome Page</Text>
+                <Text style={{ fontSize: 30, fontFamily: 'Nunito_400Regular' }}>Welcome Page</Text>
             </View>
         </SafeAreaView>
     );
