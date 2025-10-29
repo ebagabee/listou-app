@@ -2,11 +2,11 @@
 import { View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function Home() {
+export default function WelcomePage() {
     return (
         <SafeAreaView>
             <View>
-                <Text>Teste</Text>
+                <Text>Welcome Page</Text>
             </View>
         </SafeAreaView>
     );
