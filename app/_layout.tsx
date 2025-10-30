@@ -25,7 +25,6 @@ export default function RootLayout() {
     }
 
     return (
-        <SQLiteProvider databaseName="shoppingList.db" onInit={createTables}>
             <Stack>
                 <Stack.Screen
                     name="welcomePage"
@@ -41,6 +40,5 @@ export default function RootLayout() {
                     }}
                 />
             </Stack>
-        </SQLiteProvider>
     );
 }
