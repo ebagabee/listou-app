@@ -12,9 +12,9 @@ export default function WelcomePage() {
                 </Text>
 
                 <Text style={style.subtitle}>
-                    Com o Listou, você pode criar{'\n'}
+                    Com o <Text style={style.highlightedText}>Listou</Text>, você pode criar{'\n'}
                     e organizar suas compras com{'\n'}
-                    facilidade
+                    <Text style={{ color: theme.colors.primary, fontWeight: 'bold' }}>facilidade</Text>
                 </Text>
             </View>
             <Image source={WelcomeHero} style={style.heroImage}></Image>
@@ -51,14 +51,18 @@ const style = StyleSheet.create({
         textAlign: 'center',
         color: '#555',
     },
+    highlightedText: {
+        fontWeight: 'bold',
+        fontStyle: 'italic'
+    },
     heroImage: {
-        width: 350,
-        height: 300,
+        width: 305,
+        height: 285,
         objectFit: "contain"
     },
     custonButton: {
         padding: 14,
-        backgroundColor: '#FF5900',
+        backgroundColor: theme.colors.primary,
         borderRadius: 40,
         width: 300
     }
