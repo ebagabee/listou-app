@@ -25,22 +25,22 @@ export default function RootLayout() {
     }
 
     return (
-        <SQLiteProvider databaseName="shoppingList.db" onInit={createTables}>
-            <Stack>
-                <Stack.Screen
-                    name="welcomePage"
-                    options={{
-                        headerShown: false,
-                    }}
-                />
 
-                <Stack.Screen
-                    name="homePage"
-                    options={{
-                        header: () => <DefaultHeader />
-                    }}
-                />
-            </Stack>
-        </SQLiteProvider>
+        <Stack>
+            <Stack.Screen
+                name="welcomePage"
+                options={{
+                    headerShown: false,
+                }}
+            />
+
+            <Stack.Screen
+                name="homePage"
+                options={{
+                    header: () => <DefaultHeader />
+                }}
+            />
+        </Stack>
+
     );
 }
