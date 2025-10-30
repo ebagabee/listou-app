@@ -3,6 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import theme from "./theme"
 import WelcomeHero from "../assets/images/welcome-hero.png";
 import { Link } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function WelcomePage() {
     return (
@@ -19,11 +20,17 @@ export default function WelcomePage() {
                 </Text>
             </View>
             <Image source={WelcomeHero} style={style.heroImage}></Image>
-
-            <TouchableOpacity style={style.custonButton}>
-                <Link href="homePage" style={{ color: "#fff", fontSize: 20, textAlign: 'center', fontFamily: 'Nunito_700Bold' }}>
-                    Criar minha lista!
-                </Link>
+            <TouchableOpacity>
+            <LinearGradient
+                colors={theme.colors.primaryGradient}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={style.custonButton}
+            >
+                    <Link href="homePage" style={{ color: "#fff", fontSize: 20, textAlign: 'center', fontFamily: 'Nunito_700Bold' }}>
+                        Criar minha lista!
+                    </Link>
+                </LinearGradient>
             </TouchableOpacity>
         </SafeAreaView>
     );
@@ -63,7 +70,6 @@ const style = StyleSheet.create({
     },
     custonButton: {
         padding: 14,
-        backgroundColor: theme.colors.primary,
         borderRadius: 40,
         width: 300
     }
