@@ -2,6 +2,8 @@ import { SplashScreen, Stack } from "expo-router";
 import { useFonts, Nunito_400Regular, Nunito_700Bold, Nunito_500Medium } from '@expo-google-fonts/nunito';
 import { useEffect } from "react";
 import DefaultHeader from "../components/defaultHeader";
+import { SQLiteProvider } from "expo-sqlite";
+import { createTables } from "../database/migrations";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -23,20 +25,22 @@ export default function RootLayout() {
     }
 
     return (
-        <Stack>
-            <Stack.Screen
-                name="welcomePage"
-                options={{
-                    headerShown: false,
-                }}
-            />
+        <SQLiteProvider databaseName="shoppingList.db" onInit={createTables}>
+            <Stack>
+                <Stack.Screen
+                    name="welcomePage"
+                    options={{
+                        headerShown: false,
+                    }}
+                />
 
-            <Stack.Screen
-                name="homePage"
-                options={{
-                    header: () => <DefaultHeader />
-                }}
-            />
-        </Stack>
+                <Stack.Screen
+                    name="homePage"
+                    options={{
+                        header: () => <DefaultHeader />
+                    }}
+                />
+            </Stack>
+        </SQLiteProvider>
     );
 }
