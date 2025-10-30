@@ -7,6 +7,15 @@ import { createTables } from "../database/migrations";
 
 SplashScreen.preventAutoHideAsync();
 
+async function onInitErrorHandler(db: any) {
+    try {
+        await createTables(db);
+        console.log('Banco inicializado');
+    } catch (error) {
+        console.error('Erro ao criar tabelas', error);
+    }
+}
+
 export default function RootLayout() {
     const [fontsLoaded] = useFonts({
         Nunito_400Regular,
@@ -25,22 +34,22 @@ export default function RootLayout() {
     }
 
     return (
+        <SQLiteProvider databaseName="shoppingList.db" onInit={onInitErrorHandler}>
+            <Stack>
+                <Stack.Screen
+                    name="welcomePage"
+                    options={{
+                        headerShown: false,
+                    }}
+                />
 
-        <Stack>
-            <Stack.Screen
-                name="welcomePage"
-                options={{
-                    headerShown: false,
-                }}
-            />
-
-            <Stack.Screen
-                name="homePage"
-                options={{
-                    header: () => <DefaultHeader />
-                }}
-            />
-        </Stack>
-
+                <Stack.Screen
+                    name="homePage"
+                    options={{
+                        header: () => <DefaultHeader />
+                    }}
+                />
+            </Stack>
+        </SQLiteProvider>
     );
 }

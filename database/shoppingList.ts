@@ -1,10 +1,9 @@
-import { db } from "./connection";
-
-export async function addList(name: string) {
+export async function addList(db: any, name: string) {
   return db.runAsync("INSERT INTO lists (name) VALUES (?)", [name]);
 }
 
 export async function addListItem(
+  db: any,
   listId: number,
   name: string,
   quantity: number,
@@ -16,10 +15,10 @@ export async function addListItem(
   );
 }
 
-export async function getLists() {
+export async function getLists(db: any) {
   return db.getAllAsync("SELECT * FROM lists");
 }
 
-export async function getItems(listId: number) {
+export async function getItems(db: any, listId: number) {
   return db.getAllAsync("SELECT * FROM list_items WHERE list_id = ?", [listId]);
 }
