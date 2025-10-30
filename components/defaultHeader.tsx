@@ -7,7 +7,7 @@ export default function DefaultHeader() {
     return (
         <SafeAreaView style={styles.safeArea} edges={['top']}>
             <View style={styles.headerContainer}>
-                <Text style={styles.logoText}>Listou</Text>
+                <Text style={styles.logoText}>L i s t o u</Text>
                 <Settings2 size={26} color={theme.colors.text} />
             </View>
         </SafeAreaView>
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: 'center',
         backgroundColor: theme.colors.background,
-        borderBottomColor: 'rgba(0, 0, 0, 0.10',
+        borderBottomColor: 'rgba(0, 0, 0, 0.10)',
         borderBottomWidth: 1,
     },
     logoText: {
