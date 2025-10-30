@@ -39,9 +39,10 @@ export default function WelcomePage() {
 const style = StyleSheet.create({
     safeArea: {
         flex: 1,
-        justifyContent: 'space-evenly',
+        justifyContent: 'space-between',
         alignItems: 'center',
         backgroundColor: '#fff',
+        paddingVertical: 30
     },
     container: {
         alignItems: 'center',
