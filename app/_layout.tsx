@@ -1,6 +1,7 @@
 import { SplashScreen, Stack } from "expo-router";
 import { useFonts, Nunito_400Regular, Nunito_700Bold, Nunito_500Medium } from '@expo-google-fonts/nunito';
 import { useEffect } from "react";
+import DefaultHeader from "../components/defaultHeader";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -27,6 +28,13 @@ export default function RootLayout() {
                 name="welcomePage"
                 options={{
                     headerShown: false,
+                }}
+            />
+
+            <Stack.Screen
+                name="homePage"
+                options={{
+                    header: () => <DefaultHeader />
                 }}
             />
         </Stack>

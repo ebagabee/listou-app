@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, Image, Button, TouchableOpacity } from 'react-n
 import { SafeAreaView } from 'react-native-safe-area-context';
 import theme from "./theme"
 import WelcomeHero from "../assets/images/welcome-hero.png";
+import { Link } from 'expo-router';
 
 export default function WelcomePage() {
     return (
@@ -20,9 +21,9 @@ export default function WelcomePage() {
             <Image source={WelcomeHero} style={style.heroImage}></Image>
 
             <TouchableOpacity style={style.custonButton}>
-                <Text style={{ color: "#fff", fontSize: 20, textAlign: 'center', fontFamily: 'Nunito_700Bold' }}>
+                <Link href="homePage" style={{ color: "#fff", fontSize: 20, textAlign: 'center', fontFamily: 'Nunito_700Bold' }}>
                     Criar minha lista!
-                </Text>
+                </Link>
             </TouchableOpacity>
         </SafeAreaView>
     );
