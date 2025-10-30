@@ -53,6 +53,7 @@ const style = StyleSheet.create({
     },
     heroImage: {
         width: 350,
+        height: 300,
         objectFit: "contain"
     },
     custonButton: {
