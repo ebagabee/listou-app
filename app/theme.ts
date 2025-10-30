@@ -3,6 +3,7 @@ const theme = {
     primary: "#FF730F",
     negative: "#FF5252",
     text: "#000",
+    text2: "#5A5A5A",
     background: "#FBFBFB",
     primaryGradient: ["#FF5900", "#FF9258", "#FF5900"] as const,
   },

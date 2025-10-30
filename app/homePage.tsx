@@ -1,29 +1,34 @@
-
-import { Plus } from 'lucide-react-native';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import theme from '../app/theme';
+import ListCard from '../components/ListCard';
 
 export default function HomePage() {
     return (
-        <View>
-            <Text>Home</Text>
+        <ScrollView style={styles.container}>
 
-            <TouchableOpacity style={styles.btn}>
-                <Plus size={30} color={"#FFF"} />
-            </TouchableOpacity>
-        </View>
+            <ListCard
+                title="Churrasco Fim de Semana"
+                itemsPreview="Picanha, Linguiça, Pão de Alho, Cerveja"
+                onPress={() => console.log("Abrir Churrasco")}
+                onPressMenu={() => console.log("Menu Churrasco")}
+            />
+            
+        </ScrollView>
     );
 }
 
+
 const styles = StyleSheet.create({
-    btn: {
-        width: 70,
-        height: 70,
-        position: 'absolute',
-        bottom: 40,
-        right: 40,
-        borderRadius: 50,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#000"
+    container: {
+        flex: 1,
+        backgroundColor: theme.colors.background,
+        paddingTop: 16,
+    },
+    pageTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: theme.colors.text,
+        margin: 16,
+        marginTop: 24,
     }
-})
+});
