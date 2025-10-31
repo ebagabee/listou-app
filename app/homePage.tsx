@@ -1,9 +1,38 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import theme from '../app/theme';
 import ListCard from '../components/ListCard';
 import { Plus } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
+import * as shoppingListDB from "../database/shoppingList";
+import { useSQLiteContext } from 'expo-sqlite';
 
 export default function HomePage() {
+    const router = useRouter();
+
+    const db = useSQLiteContext();
+
+    const handleCreateListAndNavigate = async () => {
+        const defaultListName = "Nova Lista";
+
+        try {
+            const result = await shoppingListDB.addList(db, defaultListName);
+
+            const newListId = result.lastInsertRowId;
+
+            if (newListId) {
+                router.push({
+                    pathname: `/list/${newListId}`,
+                    params: { listName: defaultListName }
+                })
+            } else {
+                throw new Error("Não foi possível obter o ID da nova lista.");
+            }
+        } catch (error) {
+            console.error("Erro ao criar a lista:", error);
+            Alert.alert("Erro", "Não foi possível criar a nova lista.");
+        }
+    }
+
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -15,7 +44,10 @@ export default function HomePage() {
                 />
             </ScrollView>
 
-            <TouchableOpacity style={styles.actionBtn}>
+            <TouchableOpacity
+                style={styles.actionBtn}
+                onPress={handleCreateListAndNavigate}
+            >
                 <Plus size={24} color="white" />
             </TouchableOpacity>
 
