@@ -8,6 +8,7 @@ import theme from "../theme";
 import React, { useState } from 'react';
 import { useSQLiteContext } from "expo-sqlite";
 import * as shoppingListDB from "../../database/shoppingList";
+import ItemList from "../../components/shopping/ItemList";
 
 type Item = {
     id: number;
@@ -148,7 +149,7 @@ export default function ListDetailPage() {
                 {items.length > 0 ? (
                     items.map((item) => (
                         <View key={item.id}>
-                            <Text>{item.name}</Text>
+                            <ItemList name={item.name} />
                         </View>
                     ))
                 ) : (
