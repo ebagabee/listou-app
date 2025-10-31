@@ -4,20 +4,28 @@ import { Settings2 } from "lucide-react-native";
 import theme from "../app/theme";
 
 export default function DefaultHeader() {
-    return (
+     return (
         <SafeAreaView style={styles.safeArea} edges={['top']}>
             <View style={styles.headerContainer}>
                 <Text style={styles.logoText}>L i s t o u</Text>
                 <Settings2 size={26} color={theme.colors.text} />
-            </View>
+             </View>
         </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
     safeArea: {
-        backgroundColor: theme.colors.background,
-    },
+        backgroundColor: '#fff', 
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.08,
+        shadowRadius: 3.84,
+        elevation: 5,
+},
     headerContainer: {
         padding: 16,
         paddingHorizontal: 16,
@@ -26,13 +34,11 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: 'center',
         backgroundColor: '#fff',
-        borderBottomColor: 'rgba(0, 0, 0, 0.10)',
-        borderBottomWidth: 1,
     },
     logoText: {
         fontSize: 20,
         fontStyle: "italic",
-        fontWeight: "800",
-        color: theme.colors.text,
+         fontWeight: "800",
+         color: theme.colors.text,
     }
 });
