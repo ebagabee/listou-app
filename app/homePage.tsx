@@ -2,16 +2,39 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'rea
 import theme from '../app/theme';
 import ListCard from '../components/ListCard';
 import { Plus } from 'lucide-react-native';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import * as shoppingListDB from "../database/shoppingList";
 import { useSQLiteContext } from 'expo-sqlite';
+import React, { useState } from 'react';
+
+type List = {
+    id: number;
+    name: string;
+};
 
 export default function HomePage() {
     const router = useRouter();
-
     const db = useSQLiteContext();
+    const [lists, setLists] = useState<List[]>([]);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            async function loadLists() {
+                try {
+                    const allLists = await shoppingListDB.getLists(db);
+                    setLists(allLists);
+                } catch (error) {
+                    console.error("Erro ao carregar listas:", error);
+                    Alert.alert("Erro", "Não foi possível carregar suas listas.");
+                }
+            }
+
+            loadLists();
+        }, [db])
+    );
 
     const handleCreateListAndNavigate = async () => {
+
         const defaultListName = "Nova Lista";
 
         try {
@@ -36,7 +59,27 @@ export default function HomePage() {
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
+                {lists.length > 0 ? (
+                    lists.map((list) => (
+                        <ListCard
+                            key={list.id}
+                            title={list.name}
+                            itemsPreview="JAJA EU COLOCO DINAMICO ISSO"
+
+                            onPress={() => router.push({
+                                pathname: `/list/${list.id}`,
+                                params: { listName: list.name }
+                            })}
+
+                            onPressMenu={() => console.log("Menu para lista: ", list.id)}
+                        />
+                    ))
+                ) : (
+                    <Text>Nenhuma lista criada ainda.</Text>
+                )
+                }
                 <ListCard
+
                     title="Churrasco Fim de Semana"
                     itemsPreview="Picanha, Linguiça, Pão de Alho, Cerveja"
                     onPress={() => console.log("Abrir Churrasco")}
