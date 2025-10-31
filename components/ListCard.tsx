@@ -37,11 +37,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 8,
         padding: 16,
-        width: '100%',
+        width: '96%',
         elevation: 2,
         borderWidth: 0.1,
         borderColor: '#f5f5f5ff',
         marginVertical: 8,
+        alignSelf: 'center'
     },
     mainContent: {
         flex: 1,
