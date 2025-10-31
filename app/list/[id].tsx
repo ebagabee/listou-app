@@ -1,7 +1,8 @@
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import {
     StyleSheet, Text, TouchableOpacity, View,
-    TextInput, Alert, KeyboardAvoidingView, Platform // 1. Imports
+    TextInput, Alert, KeyboardAvoidingView, Platform, // 1. Imports
+    ScrollView
 } from "react-native";
 import theme from "../theme";
 import React, { useState } from 'react';
@@ -26,7 +27,7 @@ export default function ListDetailPage() {
     const [quantity, setQuantity] = useState("");
     const [price, setPrice] = useState("");
 
-    const [items, setItems] = useState([]);
+    const [items, setItems] = useState<Item[]>([]);
 
     async function loadItems() {
         try {
@@ -72,6 +73,7 @@ export default function ListDetailPage() {
                 qtyNum,
                 priceNum
             );
+            loadItems();
             handleCancel();
 
         } catch (error) {
@@ -141,6 +143,20 @@ export default function ListDetailPage() {
                     </TouchableOpacity>
                 </View>
             )}
+
+            <ScrollView style={styles.listContainer}>
+                {items.length > 0 ? (
+                    items.map((item) => (
+                        <View key={item.id}>
+                            <Text>{item.name}</Text>
+                        </View>
+                    ))
+                ) : (
+                    <Text>Nenhum item na lista</Text>
+                )
+                }
+            </ScrollView>
+
         </KeyboardAvoidingView>
     );
 }
@@ -229,4 +245,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
     },
+    listContainer: {
+        marginTop: 10
+    }
 });

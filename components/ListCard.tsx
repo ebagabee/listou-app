@@ -34,15 +34,15 @@ export default function ListCard({ title, itemsPreview, onPress, onDelete }: Lis
             </Pressable>
 
             {menuVisible && (
-                    <View style={styles.menu}>
-                        <Pressable style={styles.menuItem} onPress={handleDeletePress}>
-                            <View style={styles.menuItemContent}>
-                                <Text style={styles.menuText}>Excluir</Text>
-                                <Trash size={18} />
-                            </View>
-                        </Pressable>
-                    </View>
-                )}
+                <View style={styles.menu}>
+                    <Pressable style={styles.menuItem} onPress={handleDeletePress}>
+                        <View style={styles.menuItemContent}>
+                            <Text style={styles.menuText}>Excluir</Text>
+                            <Trash size={18} />
+                        </View>
+                    </Pressable>
+                </View>
+            )}
         </View>
     )
 }

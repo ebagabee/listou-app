@@ -72,20 +72,13 @@ export default function HomePage() {
                                 params: { listName: list.name }
                             })}
 
-                            onPressMenu={() => console.log("Menu para lista: ", list.id)}
+                            onDelete={() => console.log("teste")}
                         />
                     ))
                 ) : (
                     <Text>Nenhuma lista criada ainda.</Text>
                 )
                 }
-                <ListCard
-
-                    title="Churrasco Fim de Semana"
-                    itemsPreview="Picanha, Linguiça, Pão de Alho, Cerveja"
-                    onPress={() => console.log("Abrir Churrasco")}
-                    onPressMenu={() => console.log("Menu Churrasco")}
-                />
             </ScrollView>
 
             <TouchableOpacity
