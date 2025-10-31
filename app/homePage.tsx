@@ -6,6 +6,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import * as shoppingListDB from "../database/shoppingList";
 import { useSQLiteContext } from 'expo-sqlite';
 import React, { useState } from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
 
 type List = {
     id: number;
@@ -88,10 +89,16 @@ export default function HomePage() {
             </ScrollView>
 
             <TouchableOpacity
-                style={styles.actionBtn}
                 onPress={handleCreateListAndNavigate}
             >
-                <Plus size={24} color="white" />
+                <LinearGradient
+                    colors={['#FFA879', '#FF5900']}
+                    start={{ x: 0, y: 0.5 }}
+                    end={{ x: 1, y: 0.5 }}
+                    style={styles.actionBtn}
+                >
+                    <Plus size={32} color="white" strokeWidth={3} />
+                </LinearGradient>
             </TouchableOpacity>
 
         </View>
@@ -118,12 +125,12 @@ const styles = StyleSheet.create({
     },
     actionBtn: {
         position: "absolute",
-        bottom: 80,
-        right: 20,
-        backgroundColor: theme.colors.primary,
-        width: 56,
-        height: 56,
-        borderRadius: 28,
+        bottom: 60,
+        right: 16,
+        shadowColor: '#000',
+        width: 65,
+        height: 65,
+        borderRadius: 70,
         justifyContent: 'center',
         alignItems: 'center',
         elevation: 4,
