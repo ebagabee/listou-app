@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import {
     StyleSheet, Text, TouchableOpacity, View,
     TextInput, Alert, KeyboardAvoidingView, Platform // 1. Imports
@@ -7,6 +7,13 @@ import theme from "../theme";
 import React, { useState } from 'react';
 import { useSQLiteContext } from "expo-sqlite";
 import * as shoppingListDB from "../../database/shoppingList";
+
+type Item = {
+    id: number;
+    name: string;
+    price?: number;
+    // TODO: Adicionar o restante depois
+};
 
 export default function ListDetailPage() {
     const params = useLocalSearchParams();
@@ -18,6 +25,27 @@ export default function ListDetailPage() {
     const [itemName, setItemName] = useState("");
     const [quantity, setQuantity] = useState("");
     const [price, setPrice] = useState("");
+
+    const [items, setItems] = useState([]);
+
+    async function loadItems() {
+        try {
+            const allItems = await shoppingListDB.getItems(db, +id);
+            setItems(allItems);
+            console.log(allItems);
+        } catch (error) {
+            console.error("Erro: ", error);
+            Alert.alert("Erro", "NAo conseguiu carregar os itens da lista.")
+        }
+    }
+
+    useFocusEffect(
+        React.useCallback(() => {
+            if (+id) {
+                loadItems();
+            }
+        }, [+id, db])
+    )
 
     const handleCancel = () => {
         setItemName("");
