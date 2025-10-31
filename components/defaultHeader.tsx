@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: "space-between",
         alignItems: 'center',
-        backgroundColor: theme.colors.background,
+        backgroundColor: '#fff',
         borderBottomColor: 'rgba(0, 0, 0, 0.10)',
         borderBottomWidth: 1,
     },

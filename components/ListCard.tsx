@@ -33,14 +33,14 @@ const styles = StyleSheet.create({
     card: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: theme.colors.background,
+        alignItems: 'flex-start',
+        backgroundColor: '#fff',
         borderRadius: 8,
         padding: 16,
+        width: '100%',
         elevation: 2,
         borderWidth: 0.1,
         borderColor: '#f5f5f5ff',
-        marginHorizontal: 16,
         marginVertical: 8,
     },
     mainContent: {
@@ -51,14 +51,14 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         color: theme.colors.text,
-        marginBottom: 4,
+        marginBottom: 16,
     },
     subtitle: {
         fontSize: 14,
-        color:  theme.colors.text2,
+        color:  theme.colors.text3,
         fontWeight: '500',
     },
     menuButton: {
-        padding: 4,
+        justifyContent: 'center',
     }
 });
