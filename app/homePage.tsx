@@ -5,10 +5,7 @@ import { Plus } from 'lucide-react-native';
 
 export default function HomePage() {
     return (
-        // 1. Use uma View como container principal
         <View style={styles.container}>
-
-            {/* 2. O ScrollView agora só cuida da lista */}
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 <ListCard
                     title="Churrasco Fim de Semana"
@@ -16,16 +13,9 @@ export default function HomePage() {
                     onPress={() => console.log("Abrir Churrasco")}
                     onPressMenu={() => console.log("Menu Churrasco")}
                 />
-
-                {/* Adicione mais ListCards aqui para testar o scroll */}
-
             </ScrollView>
 
-            {/* 3. O Botão é "irmão" do ScrollView, fora dele */}
             <TouchableOpacity style={styles.actionBtn}>
-                {/* É uma boa ideia dar uma cor ao ícone também. 
-                  Estou usando 'white' como exemplo.
-                */}
                 <Plus size={24} color="white" />
             </TouchableOpacity>
 
