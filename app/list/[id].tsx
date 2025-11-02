@@ -1,14 +1,15 @@
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useNavigation } from "expo-router";
 import {
     StyleSheet, Text, TouchableOpacity, View,
     TextInput, Alert, KeyboardAvoidingView, Platform, // 1. Imports
     ScrollView
 } from "react-native";
 import theme from "../theme";
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { useSQLiteContext } from "expo-sqlite";
 import * as shoppingListDB from "../../database/shoppingList";
 import ItemList from "../../components/shopping/ItemList";
+import DefaultHeader from "../../components/defaultHeader";
 
 type Item = {
     id: number;
@@ -30,6 +31,14 @@ export default function ListDetailPage() {
     const [price, setPrice] = useState("");
 
     const [items, setItems] = useState<Item[]>([]);
+
+    const navigation = useNavigation();
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            header: () => <DefaultHeader title={String(listName)} />
+        });
+    }, [navigation, listName]);
 
     async function loadItems() {
         try {

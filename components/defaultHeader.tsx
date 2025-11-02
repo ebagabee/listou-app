@@ -3,11 +3,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Settings2 } from "lucide-react-native";
 import theme from "../app/theme";
 
-export default function DefaultHeader() {
+interface propsInterface  {
+    title?: string
+}
+
+export default function DefaultHeader({title}: propsInterface) {
      return (
         <SafeAreaView style={styles.safeArea} edges={['top']}>
             <View style={styles.headerContainer}>
-                <Text style={styles.logoText}>L i s t o u</Text>
+                <Text style={styles.logoText}>{title ? title : 'L i s t o u'}</Text>
                 <Settings2 size={26} color={theme.colors.text} />
              </View>
         </SafeAreaView>
