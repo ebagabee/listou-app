@@ -20,7 +20,7 @@ export default function ItemList({ item, onToggleChecked }: ItemListProps) {
     const infoText = `Qtd: ${quantity} | R$ ${price.toFixed(2).replace('.', ',')}`;
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, item.is_checked && { opacity: 0.6 }]}>
             <View style={styles.leftContainer}>
                 <Checkbox
                     value={item.is_checked}
@@ -29,14 +29,14 @@ export default function ItemList({ item, onToggleChecked }: ItemListProps) {
                     color={item.is_checked ? theme.colors.primary : undefined}
                 />
                 <View>
-                    <Text style={styles.name}>{item.name}</Text>
-                    <View>
-                        <Text style={styles.info}>{infoText}</Text>
-                    </View>
+                    <Text style={[styles.name, item.is_checked && styles.nameChecked]}>
+                        {item.name}
+                    </Text>
+                    <Text style={styles.info}>{infoText}</Text>
                 </View>
             </View>
 
-            <View style={[styles.actionBtns, { flexDirection: 'row', gap: 24 }]}>
+            <View style={styles.actionBtns}>
                 <Pencil color={theme.colors.text2} />
                 <Trash color={theme.colors.negative} />
             </View>
@@ -65,13 +65,17 @@ const styles = StyleSheet.create({
     },
     name: {
         fontSize: 18,
-        fontWeight: 400,
+        fontWeight: '400',
         marginLeft: 2,
+    },
+    nameChecked: {
+        textDecorationLine: 'line-through',
+        color: theme.colors.text2,
     },
     info: {
         fontSize: 14,
         color: theme.colors.text2,
-        fontWeight: 400,
+        fontWeight: '400',
     },
     checkbox: {
         padding: 10,
@@ -79,6 +83,6 @@ const styles = StyleSheet.create({
     },
     actionBtns: {
         flexDirection: 'row',
-        gap: 6
+        gap: 24,
     }
 });
