@@ -6,10 +6,14 @@ import theme from "../app/theme";
 interface ListCardProps {
   title: string;
   itemsPreview: string;
+
   onPress: () => void;
   onDelete: () => void;
   onDuplicate?: () => void;
   onRename?: () => void;
+
+  isMenuOpen: boolean;
+  onMenuToggle: () => void;
 }
 
 export default function ListCard({
@@ -19,28 +23,37 @@ export default function ListCard({
   onDelete,
   onDuplicate,
   onRename,
+  isMenuOpen,
+  onMenuToggle,
 }: ListCardProps) {
-  const [menuVisible, setMenuVisible] = useState(false);
 
   const handleDeletePress = () => {
-    setMenuVisible(false);
     onDelete();
+    onMenuToggle();
   };
 
   const handleDuplicatePress = () => {
-    setMenuVisible(false);
     onDuplicate?.();
+    onMenuToggle();
   };
 
   const handleRenamePress = () => {
-    setMenuVisible(false);
     onRename?.();
+    onMenuToggle();
+  };
+
+  const handleMainPress = () => {
+    if (isMenuOpen) {
+      onMenuToggle();
+    } else {
+      onPress();
+    }
   };
 
   return (
     <View style={styles.wrapper}>
       <View style={styles.card}>
-        <Pressable style={styles.mainContent} onPress={onPress}>
+        <Pressable style={styles.mainContent} onPress={handleMainPress}>
           <Text style={styles.title} numberOfLines={1}>
             {title}
           </Text>
@@ -49,31 +62,31 @@ export default function ListCard({
           </Text>
         </Pressable>
 
-        <Pressable style={styles.menuButton} onPress={() => setMenuVisible(!menuVisible)}>
+        <Pressable style={styles.menuButton} onPress={onMenuToggle}>
           <MoreVertical size={24} color={theme.colors.text} />
         </Pressable>
       </View>
 
-      {menuVisible && (
+      {isMenuOpen && (
         <View style={styles.menu}>
 
           <Pressable style={styles.menuItem} onPress={handleRenamePress}>
             <View style={styles.menuItemContent}>
-              <Text style={styles.menuText}>Renomear</Text>
+              <Text style={styles.menuText}>Renomear </Text>
               <Pencil size={18} />
             </View>
           </Pressable>
 
           <Pressable style={styles.menuItem} onPress={handleDuplicatePress}>
             <View style={styles.menuItemContent}>
-              <Text style={styles.menuText}>Duplicar</Text>
+              <Text style={styles.menuText}>Duplicar </Text>
               <Copy size={18} />
             </View>
           </Pressable>
 
           <Pressable style={styles.menuItem} onPress={handleDeletePress}>
             <View style={styles.menuItemContent}>
-              <Text style={styles.menuText}>Excluir</Text>
+              <Text style={styles.menuText}>Excluir </Text>
               <Trash size={18} />
             </View>
           </Pressable>
@@ -125,7 +138,7 @@ const styles = StyleSheet.create({
   },
   menu: {
     position: 'absolute',
-    top: 12,
+    top: 60,
     right: 24,
     backgroundColor: '#fff',
     borderRadius: 6,
