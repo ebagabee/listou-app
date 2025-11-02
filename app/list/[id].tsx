@@ -1,37 +1,31 @@
 import { useFocusEffect, useLocalSearchParams, useNavigation } from "expo-router";
-import {
-    StyleSheet, Text, TouchableOpacity, View,
-    TextInput, Alert, KeyboardAvoidingView, Platform, // 1. Imports
-    ScrollView
-} from "react-native";
-import theme from "../theme";
-import React, { useLayoutEffect, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, TextInput, Alert, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { useSQLiteContext } from "expo-sqlite";
+import { ItemListInterface } from "../../types/list";
+import { useCallback, useLayoutEffect, useState } from 'react';
+
 import * as shoppingListDB from "../../database/shoppingList";
+import theme from "../theme";
 import ItemList from "../../components/shopping/ItemList";
 import DefaultHeader from "../../components/defaultHeader";
-import { ItemListInterface } from "../../types/list";
-
 
 
 export default function ListDetailPage() {
     const params = useLocalSearchParams();
-    const { id, listName } = params;
     const db = useSQLiteContext();
+    const navigation = useNavigation();
 
     const [isFormVisible, setFormVisible] = useState(false);
-
     const [itemName, setItemName] = useState("");
     const [quantity, setQuantity] = useState("");
     const [price, setPrice] = useState("");
-
     const [items, setItems] = useState<ItemListInterface[]>([]);
 
-    const navigation = useNavigation();
+    const { id, listName } = params;
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            header: () => <DefaultHeader back title={String(listName)} settings={false}/>
+            header: () => <DefaultHeader back title={String(listName)} settings={false} />
         });
     }, [navigation, listName]);
 
@@ -48,7 +42,7 @@ export default function ListDetailPage() {
     }
 
     useFocusEffect(
-        React.useCallback(() => {
+        useCallback(() => {
             if (+id) {
                 loadItems();
             }
@@ -106,14 +100,22 @@ export default function ListDetailPage() {
         }
     };
 
+    const totalItemsCount = items.length;
+
+    const totalListPrice = items.reduce((sum, item) => {
+        const price = item.price || 0;
+        const quantity = item.quantity || 1;
+        return sum + (price * quantity);
+    }, 0);
+
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.container}
         >
             <View style={styles.topContainer}>
-                <Text style={styles.textLabel}>4 Itens </Text>
-                <Text style={styles.textLabel}>Total: R$98,90</Text>
+                <Text style={styles.textLabel}>{totalItemsCount} {totalItemsCount === 1 ? 'Item' : 'Itens'}</Text>
+                <Text style={styles.textLabel}>Total: R$ {totalListPrice.toFixed(2).replace('.', ',')}</Text>
             </View>
 
             {isFormVisible ? (
