@@ -41,3 +41,10 @@ export async function updateItemChecked(db: any, itemId: number, isChecked: bool
     [checkedValue, itemId]
   );
 }
+
+export async function updateListName(db: any, listId: number, newName: string) {
+  return db.runAsync(
+    'UPDATE lists SET name = ? WHERE id = ?',
+    [newName, listId]
+  );
+}
