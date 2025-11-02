@@ -11,7 +11,6 @@ import {
   ScrollView,
   RefreshControl,
   Pressable,
-  SafeAreaView,
   Image,
 } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useNavigation } from "expo-router";
@@ -22,6 +21,8 @@ import * as shoppingListDB from "../../database/shoppingList";
 import theme from "../theme";
 import ItemList from "../../components/shopping/ItemList";
 import DefaultHeader from "../../components/defaultHeader";
+
+import Cart from "../../assets/cart.png"
 
 export default function ListDetailPage() {
   const params = useLocalSearchParams();
@@ -145,7 +146,6 @@ export default function ListDetailPage() {
   }).format(totalListPrice);
 
   return (
-    <SafeAreaView style={styles.safe}>
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
         <View style={styles.headerSummary}>
           <View style={styles.summaryBox}>
@@ -265,25 +265,13 @@ export default function ListDetailPage() {
               <View style={styles.emptyState}>
                 <Text style={styles.emptyTitle}>Sua lista está vazia</Text>
                 <Text style={styles.emptySubtitle}>Toque no carrinho abaixo para adicionar o primeiro item.</Text>
+
+                <Image source={Cart} style={styles.heroImage}></Image>
               </View>
             )}
           </ScrollView>
-
-          {/* imagem do carrinho colocada dentro de uma View abaixo da ScrollView */}
-          <View style={styles.cartInlineContainer}>
-            <TouchableOpacity
-              style={styles.cartInlineButton}
-              onPress={() => setFormVisible(true)}
-              activeOpacity={0.85}
-              accessibilityRole="button"
-              accessibilityLabel="Abrir formulário adicionar item"
-            >
-              <Image source={require("../../assets/cart.png")} style={styles.cartInlineImage} resizeMode="contain" />
-            </TouchableOpacity>
-          </View>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
   );
 }
 
@@ -463,7 +451,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  /* container do cart colocado inline (abaixo do ScrollView) */
   cartInlineContainer: {
     alignItems: "center",
     marginTop: 12,
@@ -486,4 +473,9 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
   },
+  heroImage: {
+        width: 220,
+        height: 220,
+        objectFit: "contain"
+    },
 });
