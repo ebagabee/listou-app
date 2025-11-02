@@ -70,21 +70,21 @@ export default function ListCard({
       {isMenuOpen && (
         <View style={styles.menu}>
 
-          <Pressable style={styles.menuItem} onPress={handleRenamePress}>
+          <Pressable onPress={handleRenamePress}>
             <View style={styles.menuItemContent}>
               <Text style={styles.menuText}>Renomear </Text>
               <Pencil size={18} />
             </View>
           </Pressable>
 
-          <Pressable style={styles.menuItem} onPress={handleDuplicatePress}>
+          <Pressable onPress={handleDuplicatePress}>
             <View style={styles.menuItemContent}>
               <Text style={styles.menuText}>Duplicar </Text>
               <Copy size={18} />
             </View>
           </Pressable>
 
-          <Pressable style={styles.menuItem} onPress={handleDeletePress}>
+          <Pressable onPress={handleDeletePress}>
             <View style={styles.menuItemContent}>
               <Text style={styles.menuText}>Excluir </Text>
               <Trash size={18} />
@@ -149,7 +149,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     zIndex: 999,
   },
-  menuItem: {},
   menuItemContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
