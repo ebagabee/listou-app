@@ -1,3 +1,5 @@
+import { SQLiteDatabase } from "expo-sqlite";
+
 export async function addList(db: any, name: string) {
   return db.runAsync("INSERT INTO lists (name) VALUES (?)", [name]);
 }
@@ -20,5 +22,22 @@ export async function getLists(db: any) {
 }
 
 export async function getItems(db: any, listId: number) {
-  return db.getAllAsync("SELECT * FROM list_items WHERE list_id = ?", [listId]);
+  const allRows = await db.getAllAsync(
+    "SELECT id, name, quantity, price, checked FROM list_items WHERE list_id = ?", 
+    [listId]
+  );
+
+  return allRows.map((item: any) => ({
+    ...item,
+    is_checked: !!item.checked, 
+  }));
+}
+
+export async function updateItemChecked(db: any, itemId: number, isChecked: boolean) {
+  const checkedValue = isChecked ? 1 : 0; 
+  
+  return db.runAsync(
+    'UPDATE list_items SET checked = ? WHERE id = ?', 
+    [checkedValue, itemId]
+  );
 }

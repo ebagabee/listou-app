@@ -1,37 +1,51 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Checkbox } from 'expo-checkbox';
-import { useState } from "react";
 import theme from "../../app/theme";
 import { Pencil, Trash } from "lucide-react-native";
 
+type Item = {
+    id: number;
+    name: string;
+    price?: number;
+    quantity?: number;
+    is_checked: boolean;
+};
+
 interface ItemListProps {
-    name: string,
+    item: Item; 
+    onToggleChecked: (itemId: number, newCheckedState: boolean) => void;
 }
 
-export default function ItemList({ name }: ItemListProps) {
-    const [isChecked, setChecked] = useState(false);
+export default function ItemList({ item, onToggleChecked }: ItemListProps) {
+
+    const handleValueChange = () => {
+        onToggleChecked(item.id, !item.is_checked);
+    };
+
+    const quantity = item.quantity || 0;
+    const price = (item.price || 0) * quantity;
+    const infoText = `Qtd: ${quantity} | R$ ${price.toFixed(2).replace('.', ',')}`;
 
     return (
         <View style={styles.container}>
             <View style={styles.leftContainer}>
                 <Checkbox
-                value={isChecked}
-                onValueChange={setChecked}
-                style={styles.checkbox}
-                color={isChecked ? theme.colors.primary : undefined
-                }></Checkbox>
-            <View>
-                <Text style={styles.name}>{name}</Text>
+                    value={item.is_checked}
+                    onValueChange={handleValueChange}
+                    style={styles.checkbox}
+                    color={item.is_checked ? theme.colors.primary : undefined}
+                />
                 <View>
-                    <Text style={styles.info}> Qtd: 4 | R$ 40,00 </Text>
+                    <Text style={styles.name}>{item.name}</Text>
+                    <View>
+                        <Text style={styles.info}>{infoText}</Text>
+                    </View>
                 </View>
             </View>
-            </View>
 
-            {/* TODO: Adicionar os botoes aqui */}
             <View style={styles.actionBtns}>
-                <Pencil color={theme.colors.text2}/> 
-                <Trash color={theme.colors.negative}/>
+                <Pencil color={theme.colors.text2} />
+                <Trash color={theme.colors.negative} />
             </View>
         </View>
     );

@@ -14,7 +14,8 @@ type Item = {
     id: number;
     name: string;
     price?: number;
-    // TODO: Adicionar o restante depois
+    quantity?: number;
+    is_checked: boolean;
 };
 
 export default function ListDetailPage() {
@@ -34,7 +35,8 @@ export default function ListDetailPage() {
         try {
             const allItems = await shoppingListDB.getItems(db, +id);
             setItems(allItems);
-            console.log(allItems);
+
+
         } catch (error) {
             console.error("Erro: ", error);
             Alert.alert("Erro", "NAo conseguiu carregar os itens da lista.")
@@ -82,6 +84,23 @@ export default function ListDetailPage() {
             Alert.alert("Erro", "Não foi possível adicionar o item.");
         }
     }
+
+    const handleToggleChecked = async (itemId: number, newCheckedState: boolean) => {
+        try {
+            setItems(prevItems =>
+                prevItems.map(item =>
+                    item.id === itemId ? { ...item, is_checked: newCheckedState } : item
+                )
+            );
+
+            await shoppingListDB.updateItemChecked(db, itemId, newCheckedState);
+
+        } catch (error) {
+            console.error("Erro ao atualizar item: ", error);
+            Alert.alert("Erro", "Não foi possível salvar a alteração.");
+            loadItems();
+        }
+    };
 
     return (
         <KeyboardAvoidingView
@@ -148,9 +167,11 @@ export default function ListDetailPage() {
             <ScrollView style={styles.listContainer}>
                 {items.length > 0 ? (
                     items.map((item) => (
-                        <View key={item.id}>
-                            <ItemList name={item.name} />
-                        </View>
+                        <ItemList
+                            key={item.id}
+                            item={item}
+                            onToggleChecked={handleToggleChecked}
+                        />
                     ))
                 ) : (
                     <Text>Nenhum item na lista</Text>
