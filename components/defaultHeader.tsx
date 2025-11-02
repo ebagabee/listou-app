@@ -13,8 +13,10 @@ export default function DefaultHeader({title, back, settings = true}: propsInter
      return (
         <SafeAreaView style={styles.safeArea} edges={['top']}>
             <View style={styles.headerContainer}>
-                {back ? <ArrowLeft /> : null}
-                <Text style={styles.logoText}>{title ? title : 'L i s t o u'}</Text>
+                <View style={{flexDirection: 'row', gap: 4}}>
+                    {back ? <ArrowLeft /> : null}
+                    <Text style={styles.logoText}>{title ? title : 'L i s t o u'}</Text>
+                </View>
                 {settings ? <Settings2 size={26} color={theme.colors.text}/> : null }
              </View>
         </SafeAreaView>
