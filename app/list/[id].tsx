@@ -10,14 +10,9 @@ import { useSQLiteContext } from "expo-sqlite";
 import * as shoppingListDB from "../../database/shoppingList";
 import ItemList from "../../components/shopping/ItemList";
 import DefaultHeader from "../../components/defaultHeader";
+import { ItemListInterface } from "../../types/list";
 
-type Item = {
-    id: number;
-    name: string;
-    price?: number;
-    quantity?: number;
-    is_checked: boolean;
-};
+
 
 export default function ListDetailPage() {
     const params = useLocalSearchParams();
@@ -30,7 +25,7 @@ export default function ListDetailPage() {
     const [quantity, setQuantity] = useState("");
     const [price, setPrice] = useState("");
 
-    const [items, setItems] = useState<Item[]>([]);
+    const [items, setItems] = useState<ItemListInterface[]>([]);
 
     const navigation = useNavigation();
 
