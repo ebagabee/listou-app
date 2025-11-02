@@ -36,7 +36,7 @@ export default function ListDetailPage() {
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            header: () => <DefaultHeader title={String(listName)} />
+            header: () => <DefaultHeader back title={String(listName)} settings={false}/>
         });
     }, [navigation, listName]);
 

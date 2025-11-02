@@ -1,18 +1,21 @@
 import { Text, View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Settings2 } from "lucide-react-native";
+import { ArrowLeft, Settings2 } from "lucide-react-native";
 import theme from "../app/theme";
 
 interface propsInterface  {
-    title?: string
+    title?: string;
+    back?: boolean;
+    settings?: boolean;
 }
 
-export default function DefaultHeader({title}: propsInterface) {
+export default function DefaultHeader({title, back, settings = true}: propsInterface) {
      return (
         <SafeAreaView style={styles.safeArea} edges={['top']}>
             <View style={styles.headerContainer}>
+                {back ? <ArrowLeft /> : null}
                 <Text style={styles.logoText}>{title ? title : 'L i s t o u'}</Text>
-                <Settings2 size={26} color={theme.colors.text} />
+                {settings ? <Settings2 size={26} color={theme.colors.text}/> : null }
              </View>
         </SafeAreaView>
     )
