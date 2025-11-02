@@ -108,10 +108,16 @@ export default function ListDetailPage() {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.container}
         >
-            <View style={styles.topContainer}>
-                <Text style={styles.textLabel}>{totalItemsCount} {totalItemsCount === 1 ? 'Item' : 'Itens'}</Text>
-                <Text style={styles.textLabel}>Total: R$ {totalListPrice.toFixed(2).replace('.', ',')}</Text>
+        <View style={styles.summaryContainer}>
+            <View style={styles.summaryBox}>
+                <Text style={styles.summaryTitle}>Itens</Text>
+                <Text style={styles.summaryValue}>{totalItemsCount}</Text>
             </View>
+            <View style={styles.summaryBox}>
+                <Text style={styles.summaryTitle}>Total</Text>
+                <Text style={styles.summaryValue}>R$ {totalListPrice.toFixed(2).replace('.', ',')}</Text>
+            </View>
+        </View>
 
             {isFormVisible ? (
                 <View style={styles.formContainer}>
@@ -286,5 +292,35 @@ const styles = StyleSheet.create({
         color: theme.colors.text2,
         marginBottom: 16,
         textAlign: 'center',
+    },
+    summaryContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 16,
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        padding: 8,
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOpacity: 0.05,
+        shadowRadius: 6,
+        shadowOffset: { width: 0, height: 2 },
+    },
+    summaryBox: {
+        alignItems: 'center',
+        flex: 1,
+    },
+
+    summaryTitle: {
+        fontSize: 14,
+        color: theme.colors.text,
+        marginBottom: 4,
+        fontWeight: 700,
+    },
+
+    summaryValue: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: theme.colors.text2,
     },
 });
