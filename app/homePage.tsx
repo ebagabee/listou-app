@@ -71,7 +71,6 @@ export default function HomePage() {
         setListToRename(list);
         setModalNewName(list.name);
         setIsRenameModalVisible(true);
-        closeActiveMenu();
     };
 
     const handleRenameCancel = () => {
