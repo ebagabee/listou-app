@@ -43,7 +43,7 @@ export default function ItemList({ item, onToggleChecked }: ItemListProps) {
                 </View>
             </View>
 
-            <View style={styles.actionBtns}>
+            <View style={[styles.actionBtns, { flexDirection: 'row', gap: 24 }]}>
                 <Pencil color={theme.colors.text2} />
                 <Trash color={theme.colors.negative} />
             </View>
@@ -53,11 +53,17 @@ export default function ItemList({ item, onToggleChecked }: ItemListProps) {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
+        paddingVertical: 8,
+        paddingHorizontal: 12,
         width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+        borderRadius: 6,
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderColor: '#eaeaeaff',
+        marginBottom: 8,
     },
     leftContainer: {
         flexDirection: 'row',
@@ -65,17 +71,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     name: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 400,
         marginLeft: 2,
     },
     info: {
-        fontSize: 12,
+        fontSize: 14,
         color: theme.colors.text2,
         fontWeight: 400,
     },
     checkbox: {
-        padding: 10
+        padding: 10,
+        marginRight: 8,
     },
     actionBtns: {
         flexDirection: 'row',
