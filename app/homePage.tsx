@@ -7,16 +7,12 @@ import * as shoppingListDB from "../database/shoppingList";
 import { useSQLiteContext } from 'expo-sqlite';
 import React, { useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-
-type List = {
-    id: number;
-    name: string;
-};
+import { ListInterface } from '../types/list';
 
 export default function HomePage() {
     const router = useRouter();
     const db = useSQLiteContext();
-    const [lists, setLists] = useState<List[]>([]);
+    const [lists, setLists] = useState<ListInterface[]>([]);
 
     useFocusEffect(
         React.useCallback(() => {

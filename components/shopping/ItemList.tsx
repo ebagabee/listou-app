@@ -2,17 +2,10 @@ import { StyleSheet, Text, View } from "react-native";
 import { Checkbox } from 'expo-checkbox';
 import theme from "../../app/theme";
 import { Pencil, Trash } from "lucide-react-native";
-
-type Item = {
-    id: number;
-    name: string;
-    price?: number;
-    quantity?: number;
-    is_checked: boolean;
-};
+import { ItemListInterface } from "../../types/list";
 
 interface ItemListProps {
-    item: Item; 
+    item: ItemListInterface; 
     onToggleChecked: (itemId: number, newCheckedState: boolean) => void;
 }
 
