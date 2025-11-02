@@ -16,9 +16,9 @@ export default function DefaultHeader({title, back, settings = true}: propsInter
      return (
         <SafeAreaView style={styles.safeArea} edges={['top']}>
             <View style={styles.headerContainer}>
-                <View style={{flexDirection: 'row', gap: 4}}>
+                <View style={{flexDirection: 'row', alignItems: 'center', gap: 12}}>
                     {back ? <ArrowLeft onPress={navigation.goBack}/> : null}
-                    <Text style={styles.logoText}>{title ? title : 'L i s t o u'}</Text>
+                    <Text style={styles.logoText}>{title ? title : 'Listou App'}</Text>
                 </View>
                 {settings ? <Settings2 size={26} color={theme.colors.text}/> : null }
              </View>
@@ -49,8 +49,7 @@ const styles = StyleSheet.create({
     },
     logoText: {
         fontSize: 20,
-        fontStyle: "italic",
-         fontWeight: "800",
+         fontWeight: "500",
          color: theme.colors.text,
     }
 });

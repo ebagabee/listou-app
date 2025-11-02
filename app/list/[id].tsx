@@ -9,7 +9,6 @@ import theme from "../theme";
 import ItemList from "../../components/shopping/ItemList";
 import DefaultHeader from "../../components/defaultHeader";
 
-
 export default function ListDetailPage() {
     const params = useLocalSearchParams();
     const db = useSQLiteContext();
@@ -33,11 +32,9 @@ export default function ListDetailPage() {
         try {
             const allItems = await shoppingListDB.getItems(db, +id);
             setItems(allItems);
-
-
         } catch (error) {
             console.error("Erro: ", error);
-            Alert.alert("Erro", "Nao conseguiu carregar os itens da lista.")
+            Alert.alert("Erro", "Não conseguiu carregar os itens da lista.");
         }
     }
 
@@ -47,14 +44,14 @@ export default function ListDetailPage() {
                 loadItems();
             }
         }, [+id, db])
-    )
+    );
 
     const handleCancel = () => {
         setItemName("");
         setQuantity("");
         setPrice("");
         setFormVisible(false);
-    }
+    };
 
     const handleAddItem = async () => {
         if (itemName.trim().length === 0) {
@@ -76,12 +73,11 @@ export default function ListDetailPage() {
             );
             loadItems();
             handleCancel();
-
         } catch (error) {
             console.error("Erro ao adicionar item:", error);
             Alert.alert("Erro", "Não foi possível adicionar o item.");
         }
-    }
+    };
 
     const handleToggleChecked = async (itemId: number, newCheckedState: boolean) => {
         try {
@@ -92,7 +88,6 @@ export default function ListDetailPage() {
             );
 
             await shoppingListDB.updateItemChecked(db, itemId, newCheckedState);
-
         } catch (error) {
             console.error("Erro ao atualizar item: ", error);
             Alert.alert("Erro", "Não foi possível salvar a alteração.");
@@ -158,16 +153,13 @@ export default function ListDetailPage() {
                         </TouchableOpacity>
                     </View>
                 </View>
-
             ) : (
-                <View>
-                    <TouchableOpacity
-                        style={styles.customBtn}
-                        onPress={() => setFormVisible(true)}
-                    >
-                        <Text style={styles.customBtnText}> + Adicionar Item </Text>
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity
+                    style={styles.customBtn}
+                    onPress={() => setFormVisible(true)}
+                >
+                    <Text style={styles.customBtnText}> + Adicionar Item </Text>
+                </TouchableOpacity>
             )}
 
             <ScrollView style={styles.listContainer}>
@@ -180,11 +172,12 @@ export default function ListDetailPage() {
                         />
                     ))
                 ) : (
-                    <Text>Nenhum item na lista</Text>
-                )
-                }
+                    <View style={styles.emptyState}>
+                        <Text style={styles.emptyText}>Sua lista está vazia.</Text>
+                        <Text style={styles.emptySubtext}>Clique no botão acima e adicione o primeiro item!</Text>
+                    </View>
+                )}
             </ScrollView>
-
         </KeyboardAvoidingView>
     );
 }
@@ -264,7 +257,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     cancelButtonText: {
-        color: '#333',
+        color: theme.colors.text,
         fontWeight: 'bold',
     },
     addButton: {
@@ -275,6 +268,23 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     listContainer: {
-        marginTop: 16
-    }
+        marginTop: 16,
+    },
+    emptyState: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 40,
+    },
+    emptyText: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: theme.colors.text,
+        marginBottom: 8,
+    },
+    emptySubtext: {
+        fontSize: 14,
+        color: theme.colors.text2,
+        marginBottom: 16,
+        textAlign: 'center',
+    },
 });
