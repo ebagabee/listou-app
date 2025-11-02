@@ -1,8 +1,22 @@
+import React, { useCallback, useLayoutEffect, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  TextInput,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  RefreshControl,
+  Pressable,
+  SafeAreaView,
+  Image,
+} from "react-native";
 import { useFocusEffect, useLocalSearchParams, useNavigation } from "expo-router";
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, Alert, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { useSQLiteContext } from "expo-sqlite";
 import { ItemListInterface } from "../../types/list";
-import { useCallback, useLayoutEffect, useState } from 'react';
 
 import * as shoppingListDB from "../../database/shoppingList";
 import theme from "../theme";
@@ -10,317 +24,466 @@ import ItemList from "../../components/shopping/ItemList";
 import DefaultHeader from "../../components/defaultHeader";
 
 export default function ListDetailPage() {
-    const params = useLocalSearchParams();
-    const db = useSQLiteContext();
-    const navigation = useNavigation();
+  const params = useLocalSearchParams();
+  const db = useSQLiteContext();
+  const navigation = useNavigation();
 
-    const [isFormVisible, setFormVisible] = useState(false);
-    const [itemName, setItemName] = useState("");
-    const [quantity, setQuantity] = useState("");
-    const [price, setPrice] = useState("");
-    const [items, setItems] = useState<ItemListInterface[]>([]);
+  const [isFormVisible, setFormVisible] = useState(false);
+  const [itemName, setItemName] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [price, setPrice] = useState("");
+  const [items, setItems] = useState<ItemListInterface[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [loadingAction, setLoadingAction] = useState(false);
 
-    const { id, listName } = params;
+  const { id, listName } = params;
 
-    useLayoutEffect(() => {
-        navigation.setOptions({
-            header: () => <DefaultHeader back title={String(listName)} settings={false} />
-        });
-    }, [navigation, listName]);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      header: () => <DefaultHeader back title={String(listName)} settings={false} />,
+    });
+  }, [navigation, listName]);
 
-    async function loadItems() {
-        try {
-            const allItems = await shoppingListDB.getItems(db, +id);
-            setItems(allItems);
-        } catch (error) {
-            console.error("Erro: ", error);
-            Alert.alert("Erro", "Não conseguiu carregar os itens da lista.");
-        }
+  async function loadItems() {
+    try {
+      const listId = parseInt(String(id), 10);
+      if (!listId) return;
+      const allItems = await shoppingListDB.getItems(db, listId);
+      setItems(allItems);
+    } catch (error) {
+      console.error("Erro: ", error);
+      Alert.alert("Erro", "Não foi possível carregar os itens da lista.");
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      loadItems();
+    }, [id, db])
+  );
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await loadItems();
+    setRefreshing(false);
+  }, [id, db]);
+
+  const handleCancel = () => {
+    setItemName("");
+    setQuantity("");
+    setPrice("");
+    setFormVisible(false);
+  };
+
+  const sanitizeNumberInput = (text: string) =>
+    text.replace(/[^0-9,.\-]/g, "").replace(/,/g, ".");
+
+  const parseQuantity = (text: string) => {
+    const sanitized = sanitizeNumberInput(text);
+    const parsed = parseFloat(sanitized);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+  };
+
+  const parsePrice = (text: string) => {
+    const sanitized = sanitizeNumberInput(text);
+    const parsed = parseFloat(sanitized);
+    return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined;
+  };
+
+  const canAddItem = itemName.trim().length > 0 && !loadingAction;
+
+  const handleAddItem = async () => {
+    if (itemName.trim().length === 0) {
+      Alert.alert("Erro", "O nome do item é obrigatório.");
+      return;
     }
 
-    useFocusEffect(
-        useCallback(() => {
-            if (+id) {
-                loadItems();
-            }
-        }, [+id, db])
-    );
+    try {
+      setLoadingAction(true);
+      const listIdNum = parseInt(String(id), 10);
+      if (!listIdNum) {
+        Alert.alert("Erro", "Lista inválida.");
+        setLoadingAction(false);
+        return;
+      }
+      const qtyNum = parseQuantity(quantity);
+      const priceNum = parsePrice(price);
 
-    const handleCancel = () => {
-        setItemName("");
-        setQuantity("");
-        setPrice("");
-        setFormVisible(false);
-    };
+      await shoppingListDB.addListItem(db, listIdNum, itemName.trim(), qtyNum, priceNum);
+      await loadItems();
+      handleCancel();
+    } catch (error) {
+      console.error("Erro ao adicionar item:", error);
+      Alert.alert("Erro", "Não foi possível adicionar o item.");
+    } finally {
+      setLoadingAction(false);
+    }
+  };
 
-    const handleAddItem = async () => {
-        if (itemName.trim().length === 0) {
-            Alert.alert("Erro", "O nome do item é obrigatório.");
-            return;
-        }
+  const handleToggleChecked = async (itemId: number, newCheckedState: boolean) => {
+    try {
+      setItems((prev) => prev.map((it) => (it.id === itemId ? { ...it, is_checked: newCheckedState } : it)));
+      await shoppingListDB.updateItemChecked(db, itemId, newCheckedState);
+    } catch (error) {
+      console.error("Erro ao atualizar item: ", error);
+      Alert.alert("Erro", "Não foi possível salvar a alteração.");
+      loadItems();
+    }
+  };
 
-        try {
-            const listIdNum = parseInt(String(id), 10);
-            const qtyNum = parseFloat(quantity.replace(',', '.')) || 1;
-            const priceNum = parseFloat(price.replace(',', '.')) || undefined;
+  const totalItemsCount = items.length;
 
-            await shoppingListDB.addListItem(
-                db,
-                listIdNum,
-                itemName,
-                qtyNum,
-                priceNum
-            );
-            loadItems();
-            handleCancel();
-        } catch (error) {
-            console.error("Erro ao adicionar item:", error);
-            Alert.alert("Erro", "Não foi possível adicionar o item.");
-        }
-    };
+  const totalListPrice = items.reduce((sum, item) => {
+    const price = item.price ?? 0;
+    const quantity = item.quantity ?? 1;
+    return sum + price * quantity;
+  }, 0);
 
-    const handleToggleChecked = async (itemId: number, newCheckedState: boolean) => {
-        try {
-            setItems(prevItems =>
-                prevItems.map(item =>
-                    item.id === itemId ? { ...item, is_checked: newCheckedState } : item
-                )
-            );
+  const formattedTotal = new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(totalListPrice);
 
-            await shoppingListDB.updateItemChecked(db, itemId, newCheckedState);
-        } catch (error) {
-            console.error("Erro ao atualizar item: ", error);
-            Alert.alert("Erro", "Não foi possível salvar a alteração.");
-            loadItems();
-        }
-    };
+  return (
+    <SafeAreaView style={styles.safe}>
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
+        <View style={styles.headerSummary}>
+          <View style={styles.summaryBox}>
+            <Text style={styles.summaryLabel}>Itens</Text>
+            <Text style={styles.summaryNumber} accessibilityLabel={`${totalItemsCount} itens`}>
+              {totalItemsCount}
+            </Text>
+          </View>
 
-    const totalItemsCount = items.length;
+          <View style={styles.divider} />
 
-    const totalListPrice = items.reduce((sum, item) => {
-        const price = item.price || 0;
-        const quantity = item.quantity || 1;
-        return sum + (price * quantity);
-    }, 0);
-
-    return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={styles.container}
-        >
-        <View style={styles.summaryContainer}>
-            <View style={styles.summaryBox}>
-                <Text style={styles.summaryTitle}>Itens</Text>
-                <Text style={styles.summaryValue}>{totalItemsCount}</Text>
-            </View>
-            <View style={styles.summaryBox}>
-                <Text style={styles.summaryTitle}>Total</Text>
-                <Text style={styles.summaryValue}>R$ {totalListPrice.toFixed(2).replace('.', ',')}</Text>
-            </View>
+          <View style={styles.summaryBox}>
+            <Text style={styles.summaryLabel}>Total</Text>
+            <Text style={styles.summaryNumber} accessibilityLabel={`Total ${formattedTotal}`}>
+              {formattedTotal}
+            </Text>
+          </View>
         </View>
 
-            {isFormVisible ? (
-                <View style={styles.formContainer}>
-                    <TextInput
-                        placeholder="Nome do item"
-                        style={styles.input}
-                        value={itemName}
-                        onChangeText={setItemName}
-                        autoFocus={true}
-                    />
-                    <View style={styles.row}>
-                        <TextInput
-                            placeholder="Quantidade (opc.)"
-                            style={[styles.input, styles.inputHalf]}
-                            keyboardType="numeric"
-                            value={quantity}
-                            onChangeText={setQuantity}
-                        />
-                        <TextInput
-                            placeholder="Preço (opc.)"
-                            style={[styles.input, styles.inputHalf]}
-                            keyboardType="decimal-pad"
-                            value={price}
-                            onChangeText={setPrice}
-                        />
-                    </View>
-                    <View style={styles.buttonRow}>
-                        <TouchableOpacity
-                            style={[styles.formButton, styles.cancelButton]}
-                            onPress={handleCancel}
-                        >
-                            <Text style={styles.cancelButtonText}>Cancelar</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[styles.formButton, styles.addButton]}
-                            onPress={handleAddItem}
-                        >
-                            <Text style={styles.addButtonText}>Adicionar</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            ) : (
-                <TouchableOpacity
-                    style={styles.customBtn}
-                    onPress={() => setFormVisible(true)}
-                >
-                    <Text style={styles.customBtnText}> + Adicionar Item </Text>
-                </TouchableOpacity>
-            )}
+        <View style={styles.content}>
+          {isFormVisible ? (
+            <View style={styles.formContainer}>
+              <Text style={styles.fieldLabel}>Novo item</Text>
+              <TextInput
+                placeholder="Nome do item"
+                placeholderTextColor={theme.colors.text2}
+                style={styles.input}
+                value={itemName}
+                onChangeText={(t) => setItemName(t)}
+                returnKeyType="next"
+                accessible
+                accessibilityLabel="Nome do item"
+                autoFocus
+              />
 
-            <ScrollView style={styles.listContainer}>
-                {items.length > 0 ? (
-                    items.map((item) => (
-                        <ItemList
-                            key={item.id}
-                            item={item}
-                            onToggleChecked={handleToggleChecked}
-                        />
-                    ))
-                ) : (
-                    <View style={styles.emptyState}>
-                        <Text style={styles.emptyText}>Sua lista está vazia.</Text>
-                        <Text style={styles.emptySubtext}>Clique no botão acima e adicione o primeiro item!</Text>
-                    </View>
-                )}
-            </ScrollView>
-        </KeyboardAvoidingView>
-    );
+              <View style={styles.row}>
+                <View style={[styles.half]}>
+                  <Text style={styles.fieldLabelSmall}>Quantidade</Text>
+                  <TextInput
+                    placeholder="1"
+                    placeholderTextColor={theme.colors.text2}
+                    keyboardType="numeric"
+                    style={[styles.input, styles.inputSmall]}
+                    value={quantity}
+                    onChangeText={(t) => setQuantity(t.replace(/[^0-9,.\-]/g, ""))}
+                    accessible
+                    accessibilityLabel="Quantidade opcional"
+                  />
+                </View>
+
+                <View style={[styles.half]}>
+                  <Text style={styles.fieldLabelSmall}>Preço</Text>
+                  <TextInput
+                    placeholder="0,00"
+                    placeholderTextColor={theme.colors.text2}
+                    keyboardType="decimal-pad"
+                    style={[styles.input, styles.inputSmall]}
+                    value={price}
+                    onChangeText={(t) => setPrice(t.replace(/[^0-9,.,]/g, "").replace(/\./g, "").replace(/,/, "."))}
+                    accessible
+                    accessibilityLabel="Preço opcional"
+                  />
+                </View>
+              </View>
+
+              <View style={styles.buttonRow}>
+                <Pressable
+                  onPress={handleCancel}
+                  style={({ pressed }) => [styles.formButton, styles.cancelButton, pressed && styles.pressed]}
+                  accessibilityRole="button"
+                  accessibilityLabel="Cancelar adição"
+                >
+                  <Text style={styles.cancelText}>Cancelar</Text>
+                </Pressable>
+
+                <Pressable
+                  onPress={handleAddItem}
+                  disabled={!canAddItem}
+                  style={({ pressed }) => [
+                    styles.formButton,
+                    canAddItem ? styles.addButton : styles.addButtonDisabled,
+                    pressed && canAddItem && styles.pressed,
+                  ]}
+                  accessibilityRole="button"
+                  accessibilityState={{ disabled: !canAddItem }}
+                  accessibilityLabel="Adicionar item"
+                >
+                  <Text style={canAddItem ? styles.addText : styles.addTextDisabled}>
+                    {loadingAction ? "Adicionando..." : "Adicionar"}
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.addFloating}
+              onPress={() => setFormVisible(true)}
+              activeOpacity={0.85}
+              accessibilityRole="button"
+              accessibilityLabel="Adicionar novo item"
+            >
+              <Text style={styles.addFloatingText}>+ Adicionar Item</Text>
+            </TouchableOpacity>
+          )}
+
+          <ScrollView
+            style={styles.listContainer}
+            contentContainerStyle={items.length === 0 ? styles.emptyWrapper : undefined}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.colors.primary} />}
+            keyboardShouldPersistTaps="handled"
+          >
+            {items.length > 0 ? (
+              items.map((item) => (
+                <ItemList key={item.id} item={item} onToggleChecked={handleToggleChecked} />
+              ))
+            ) : (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyTitle}>Sua lista está vazia</Text>
+                <Text style={styles.emptySubtitle}>Toque no carrinho abaixo para adicionar o primeiro item.</Text>
+              </View>
+            )}
+          </ScrollView>
+
+          {/* imagem do carrinho colocada dentro de uma View abaixo da ScrollView */}
+          <View style={styles.cartInlineContainer}>
+            <TouchableOpacity
+              style={styles.cartInlineButton}
+              onPress={() => setFormVisible(true)}
+              activeOpacity={0.85}
+              accessibilityRole="button"
+              accessibilityLabel="Abrir formulário adicionar item"
+            >
+              <Image source={require("../../assets/cart.png")} style={styles.cartInlineImage} resizeMode="contain" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: theme.colors.background,
-        padding: 16,
-    },
-    topContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 16,
-    },
-    textLabel: {
-        fontSize: 16,
-        fontWeight: '500',
-        color: theme.colors.text,
-        paddingRight: 5,
-    },
-    customBtn: {
-        backgroundColor: theme.colors.primary,
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-        borderRadius: 8,
-    },
-    customBtnText: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    formContainer: {
-        width: '100%',
-        backgroundColor: 'white',
-        borderRadius: 10,
-        padding: 20,
-        elevation: 3,
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-        shadowOffset: { height: 2, width: 0 },
-    },
-    input: {
-        width: '100%',
-        height: 50,
-        borderColor: '#ddd',
-        borderWidth: 1,
-        borderRadius: 8,
-        paddingHorizontal: 15,
-        marginBottom: 10,
-        fontSize: 16,
-        backgroundColor: '#f9f9f9',
-    },
-    row: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-    },
-    inputHalf: {
-        width: '48%',
-    },
-    buttonRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 20,
-    },
-    formButton: {
-        paddingVertical: 12,
-        borderRadius: 8,
-        flex: 1,
-        alignItems: 'center',
-    },
-    cancelButton: {
-        backgroundColor: '#f0f0f0',
-        marginRight: 10,
-    },
-    cancelButtonText: {
-        color: theme.colors.text,
-        fontWeight: 'bold',
-    },
-    addButton: {
-        backgroundColor: theme.colors.primary,
-    },
-    addButtonText: {
-        color: 'white',
-        fontWeight: 'bold',
-    },
-    listContainer: {
-        marginTop: 16,
-    },
-    emptyState: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: 40,
-    },
-    emptyText: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: theme.colors.text,
-        marginBottom: 8,
-    },
-    emptySubtext: {
-        fontSize: 14,
-        color: theme.colors.text2,
-        marginBottom: 16,
-        textAlign: 'center',
-    },
-    summaryContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 16,
-        backgroundColor: '#fff',
-        borderRadius: 12,
-        padding: 8,
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOpacity: 0.05,
-        shadowRadius: 6,
-        shadowOffset: { width: 0, height: 2 },
-    },
-    summaryBox: {
-        alignItems: 'center',
-        flex: 1,
-    },
+  safe: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+  },
+  headerSummary: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    padding: 12,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+    marginBottom: 12,
+  },
+  summaryBox: {
+    flex: 1,
+    alignItems: "center",
+  },
+  divider: {
+    width: 1,
+    height: 36,
+    backgroundColor: "#f0f0f0",
+    marginHorizontal: 8,
+  },
+  summaryLabel: {
+    fontSize: 13,
+    color: theme.colors.text2,
+    marginBottom: 4,
+    fontWeight: "600",
+  },
+  summaryNumber: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: theme.colors.text,
+  },
+  content: {
+    flex: 1,
+  },
+  addFloating: {
+    backgroundColor: theme.colors.primary,
+    height: 52,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 12,
+    shadowColor: theme.colors.primary,
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  addFloatingText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 16,
+  },
+  formContainer: {
+    width: "100%",
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOpacity: 0.03,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  fieldLabel: {
+    fontSize: 14,
+    color: theme.colors.text,
+    fontWeight: "700",
+    marginBottom: 8,
+  },
+  fieldLabelSmall: {
+    fontSize: 12,
+    color: theme.colors.text2,
+    marginBottom: 6,
+    fontWeight: "600",
+  },
+  input: {
+    width: "100%",
+    height: 48,
+    borderColor: "#e6e6e6",
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    marginBottom: 8,
+    fontSize: 15,
+    backgroundColor: "#fafafa",
+    color: theme.colors.text,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  half: {
+    width: "48%",
+  },
+  inputSmall: {
+    height: 44,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 12,
+  },
+  formButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  cancelButton: {
+    backgroundColor: "#f5f5f5",
+    marginRight: 10,
+  },
+  cancelText: {
+    color: theme.colors.text,
+    fontWeight: "700",
+  },
+  addButton: {
+    backgroundColor: theme.colors.primary,
+  },
+  addButtonDisabled: {
+    backgroundColor: "#d6d6d6",
+  },
+  addText: {
+    color: "#fff",
+    fontWeight: "700",
+  },
+  addTextDisabled: {
+    color: "#ffffffcc",
+    fontWeight: "700",
+  },
+  pressed: {
+    opacity: 0.85,
+  },
+  listContainer: {
+    flex: 1,
+    marginTop: 4,
+  },
+  emptyWrapper: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 40,
+  },
+  emptyState: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 20,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: theme.colors.text,
+    marginBottom: 6,
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    color: theme.colors.text2,
+    marginBottom: 16,
+    textAlign: "center",
+  },
 
-    summaryTitle: {
-        fontSize: 14,
-        color: theme.colors.text,
-        marginBottom: 4,
-        fontWeight: 700,
-    },
-
-    summaryValue: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: theme.colors.text2,
-    },
+  /* container do cart colocado inline (abaixo do ScrollView) */
+  cartInlineContainer: {
+    alignItems: "center",
+    marginTop: 12,
+    marginBottom: 20,
+  },
+  cartInlineButton: {
+    width: 64,
+    height: 64,
+    borderRadius: 16,
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+  },
+  cartInlineImage: {
+    width: 36,
+    height: 36,
+  },
 });
