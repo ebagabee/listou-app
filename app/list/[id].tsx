@@ -39,7 +39,7 @@ export default function ListDetailPage() {
 
         } catch (error) {
             console.error("Erro: ", error);
-            Alert.alert("Erro", "NAo conseguiu carregar os itens da lista.")
+            Alert.alert("Erro", "Nao conseguiu carregar os itens da lista.")
         }
     }
 
@@ -108,8 +108,8 @@ export default function ListDetailPage() {
             style={styles.container}
         >
             <View style={styles.topContainer}>
-                <Text style={styles.textLabel}>4 Items </Text>
-                <Text style={styles.textLabel}>Total: R$9890 </Text>
+                <Text style={styles.textLabel}>4 Itens </Text>
+                <Text style={styles.textLabel}>Total: R$98,90</Text>
             </View>
 
             {isFormVisible ? (
@@ -196,6 +196,7 @@ const styles = StyleSheet.create({
     },
     textLabel: {
         fontSize: 16,
+        fontWeight: '500',
         color: theme.colors.text,
         paddingRight: 5,
     },
@@ -268,6 +269,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     listContainer: {
-        marginTop: 10
+        marginTop: 16
     }
 });
