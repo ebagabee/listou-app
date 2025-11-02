@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Pressable } from 'react-native';
 import theme from '../app/theme';
 import ListCard from '../components/ListCard';
 import { Plus } from 'lucide-react-native';
@@ -12,7 +12,9 @@ import { ListInterface } from '../types/list';
 export default function HomePage() {
     const router = useRouter();
     const db = useSQLiteContext();
+
     const [lists, setLists] = useState<ListInterface[]>([]);
+    const [activeMenuId, setActiveMenuId] = useState<number | null>(null);
 
     useFocusEffect(
         React.useCallback(() => {
@@ -29,6 +31,14 @@ export default function HomePage() {
             loadLists();
         }, [db])
     );
+
+    const handleMenuToggle = (listId: number) => {
+        setActiveMenuId(prevId => (prevId === listId ? null : listId));
+    }
+
+    const closeActiveMenu = () => {
+        setActiveMenuId(null);
+    }
 
     const handleCreateListAndNavigate = async () => {
 
@@ -55,27 +65,43 @@ export default function HomePage() {
 
     return (
         <View style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollContent}>
-                {lists.length > 0 ? (
-                    lists.map((list) => (
-                        <ListCard
-                            key={list.id}
-                            title={list.name}
-                            itemsPreview="JAJA EU COLOCO DINAMICO ISSO"
+            <Pressable style={{ flex: 1 }} onPress={closeActiveMenu}>
+                <ScrollView
+                    contentContainerStyle={styles.scrollContent}
+                    onScrollBeginDrag={closeActiveMenu}
+                    keyboardShouldPersistTaps='handled'
+                >
+                    <View onStartShouldSetResponder={() => true}>
+                        {lists.length > 0 ? (
+                            lists.map((list) => (
+                                <ListCard
+                                    key={list.id}
+                                    title={list.name}
+                                    itemsPreview="JAJA EU COLOCO DINAMICO ISSO"
 
-                            onPress={() => router.push({
-                                pathname: `/list/${list.id}`,
-                                params: { listName: list.name }
-                            })}
+                                    onPress={() => router.push({
+                                        pathname: `/list/${list.id}`,
+                                        params: { listName: list.name }
+                                    })}
 
-                            onDelete={() => console.log("teste")}
-                        />
-                    ))
-                ) : (
-                    <Text>Nenhuma lista criada ainda.</Text>
-                )
-                }
-            </ScrollView>
+                                    onDelete={() => {
+                                        console.log("teste");
+                                        closeActiveMenu();
+                                    }}
+
+                                    isMenuOpen={activeMenuId === list.id}
+                                    onMenuToggle={() => handleMenuToggle(list.id)}
+                                />
+                            ))
+                        ) : (
+                            <Text>Nenhuma lista criada ainda.</Text>
+                        )
+                        }
+                    </View>
+
+                </ScrollView>
+            </Pressable>
+
 
             <TouchableOpacity
                 onPress={handleCreateListAndNavigate}
