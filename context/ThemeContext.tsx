@@ -1,5 +1,5 @@
 import { useSQLiteContext } from "expo-sqlite";
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import * as shoppingListDB from "../database/shoppingList"
 
 const defaultTheme = {
@@ -53,7 +53,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         loadTheme();
     }, [db]);
 
-    const setAppTheme = async (newPrimaryColor: string) => {
+    const setAppTheme = useCallback(async (newPrimaryColor: string) => {
         try {
             await shoppingListDB.setPreference(db, "theme_primary", newPrimaryColor);
 
@@ -67,13 +67,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         } catch (e) {
             console.error("Erro ao salvar tema:", e);
         }
-    };
+    }, [db]);
 
-    const value = {
+    const value = useMemo(() => ({
         theme,
         setAppTheme,
         isLoadingTheme,
-    };
+    }), [theme, setAppTheme, isLoadingTheme]);
 
     if (isLoadingTheme) {
         return null;
