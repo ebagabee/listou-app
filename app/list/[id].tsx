@@ -183,7 +183,7 @@ export default function ListDetailPage() {
 
               <View style={styles.row}>
                 <View style={[styles.half]}>
-                  <Text style={styles.fieldLabelSmall}>Quantidade</Text>
+                  <Text style={styles.fieldLabel}>Quantidade</Text>
                   <TextInput
                     placeholder="1"
                     placeholderTextColor={theme.colors.text2}
@@ -197,7 +197,7 @@ export default function ListDetailPage() {
                 </View>
 
                 <View style={[styles.half]}>
-                  <Text style={styles.fieldLabelSmall}>Preço</Text>
+                  <Text style={styles.fieldLabel}>Preço</Text>
                   <TextInput
                     placeholder="0,00"
                     placeholderTextColor={theme.colors.text2}
@@ -263,8 +263,8 @@ export default function ListDetailPage() {
               ))
             ) : (
               <View style={styles.emptyState}>
-                <Text style={styles.emptyTitle}>Sua lista está vazia</Text>
-                <Text style={styles.emptySubtitle}>Toque no carrinho abaixo para adicionar o primeiro item.</Text>
+                <Text style={styles.emptyTitle}>Sua lista está vazia.</Text>
+                <Text style={styles.emptySubtitle}>Toque no botão acima para adicionar um item.</Text>
 
                 <Image source={Cart} style={styles.heroImage}></Image>
               </View>
@@ -355,14 +355,8 @@ const styles = StyleSheet.create({
   fieldLabel: {
     fontSize: 14,
     color: theme.colors.text,
-    fontWeight: "700",
+    fontWeight: "500",
     marginBottom: 8,
-  },
-  fieldLabelSmall: {
-    fontSize: 12,
-    color: theme.colors.text2,
-    marginBottom: 6,
-    fontWeight: "600",
   },
   input: {
     width: "100%",
@@ -373,7 +367,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginBottom: 8,
     fontSize: 15,
-    backgroundColor: "#fafafa",
+    backgroundColor: "theme.colors.background",
     color: theme.colors.text,
   },
   row: {
