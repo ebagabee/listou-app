@@ -171,7 +171,7 @@ export default function ListDetailPage() {
               <Text style={styles.fieldLabel}>Novo item</Text>
               <TextInput
                 placeholder="Nome do item"
-                placeholderTextColor={theme.colors.text2}
+                placeholderTextColor={theme.colors.text3}
                 style={styles.input}
                 value={itemName}
                 onChangeText={(t) => setItemName(t)}
@@ -186,7 +186,7 @@ export default function ListDetailPage() {
                   <Text style={styles.fieldLabel}>Quantidade</Text>
                   <TextInput
                     placeholder="1"
-                    placeholderTextColor={theme.colors.text2}
+                    placeholderTextColor={theme.colors.text3}
                     keyboardType="numeric"
                     style={[styles.input, styles.inputSmall]}
                     value={quantity}
@@ -200,7 +200,7 @@ export default function ListDetailPage() {
                   <Text style={styles.fieldLabel}>Preço</Text>
                   <TextInput
                     placeholder="0,00"
-                    placeholderTextColor={theme.colors.text2}
+                    placeholderTextColor={theme.colors.text3}
                     keyboardType="decimal-pad"
                     style={[styles.input, styles.inputSmall]}
                     value={price}
