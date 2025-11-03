@@ -12,7 +12,8 @@ export async function createTables(db: any) {
       quantity INTEGER NOT NULL,
       checked BOOLEAN DEFAULT 0,
       price REAL,
-      FOREIGN KEY (list_id) REFERENCES lists(id) -- Corrigi 'list(id)' para 'lists(id)'
+      position INTEGER DEFAULT 0,
+      FOREIGN KEY (list_id) REFERENCES lists(id) ON DELETE CASCADE
     );
   `);
 }
