@@ -23,13 +23,13 @@ export async function getLists(db: any) {
 
 export async function getItems(db: any, listId: number) {
   const allRows = await db.getAllAsync(
-    "SELECT id, name, quantity, price, checked FROM list_items WHERE list_id = ?", 
+    "SELECT id, name, quantity, price, checked, position FROM list_items WHERE list_id = ? ORDER BY checked ASC, position ASC",
     [listId]
   );
 
   return allRows.map((item: any) => ({
     ...item,
-    is_checked: !!item.checked, 
+    is_checked: !!item.checked,
   }));
 }
 

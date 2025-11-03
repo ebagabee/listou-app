@@ -123,8 +123,22 @@ export default function ListDetailPage() {
 
   const handleToggleChecked = async (itemId: number, newCheckedState: boolean) => {
     try {
-      setItems((prev) => prev.map((it) => (it.id === itemId ? { ...it, is_checked: newCheckedState } : it)));
+      setItems((prevItems) => {
+        const updatedItems = prevItems.map((item) =>
+          item.id === itemId ? { ...item, is_checked: newCheckedState } : item
+        );
+
+        return updatedItems.sort((a, b) => {
+          if (a.is_checked !== b.is_checked) {
+            return a.is_checked ? 1 : -1;
+          }
+
+          return (a.position || 0) - (b.position || 0);
+        });
+      });
+
       await shoppingListDB.updateItemChecked(db, itemId, newCheckedState);
+
     } catch (error) {
       console.error("Erro ao atualizar item: ", error);
       Alert.alert("Erro", "Não foi possível salvar a alteração.");

@@ -4,9 +4,10 @@ export interface ListInterface {
 }
 
 export interface ItemListInterface {
-        id: number;
-        name: string;
-        price?: number;
-        quantity?: number;
-        is_checked: boolean;
+    id: number;
+    name: string;
+    price?: number;
+    quantity?: number;
+    is_checked: boolean;
+    position: number;
 }
