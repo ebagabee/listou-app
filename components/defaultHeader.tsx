@@ -1,30 +1,41 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArrowLeft, Settings2 } from "lucide-react-native";
 import theme from "../app/theme";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 
-interface propsInterface  {
-    title?: string;
-    back?: boolean;
-    settings?: boolean;
+interface propsInterface {
+  title?: string;
+  back?: boolean;
+  settings?: boolean;
 }
 
-export default function DefaultHeader({title, back, settings = true}: propsInterface) {
-    const navigation = useNavigation();
+export default function DefaultHeader({ title, back, settings = true }: propsInterface) {
+  const navigation = useNavigation();
+  const router = useRouter();
 
-     return (
-        <SafeAreaView style={styles.safeArea} edges={['top']}>
-            <View style={styles.headerContainer}>
-                <View style={{flexDirection: 'row', alignItems: 'center', gap: 12}}>
-                    {back ? <ArrowLeft onPress={navigation.goBack}/> : null}
-                    <Text style={styles.logoText}>{title ? title : 'Listou App'}</Text>
-                </View>
-                {settings ? <Settings2 size={26} color={theme.colors.text}/> : null }
-             </View>
-        </SafeAreaView>
-    )
+  return (
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
+      <View style={styles.headerContainer}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+          {back ? (
+            <Pressable onPress={() => (navigation as any).goBack()}>
+              <ArrowLeft size={24} color={theme.colors.text} />
+            </Pressable>
+          ) : null}
+          <Text style={styles.logoText}>{title ? title : "Listou App"}</Text>
+        </View>
+
+        {settings ? (
+          <Pressable onPress={() => router.push("/preferences/preferencesPage")}>
+            <Settings2 size={26} color={theme.colors.text} />
+          </Pressable>
+        ) : null}
+      </View>
+    </SafeAreaView>
+  );
 }
+
 
 const styles = StyleSheet.create({
     safeArea: {
