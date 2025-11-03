@@ -1,11 +1,52 @@
 import { View, Text, StyleSheet, Image, Button, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import theme from "./theme"
+import { useTheme } from '../context/ThemeContext';
 import WelcomeHero from "../assets/images/welcome-hero.png";
 import { Link } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function WelcomePage() {
+    const { theme } = useTheme();
+
+    const style = StyleSheet.create({
+        safeArea: {
+            flex: 1,
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: '#fff',
+            paddingVertical: 30
+        },
+        container: {
+            alignItems: 'center',
+            paddingHorizontal: 20,
+        },
+        title: {
+            fontSize: 32,
+            fontFamily: 'Nunito_700Bold',
+            textAlign: 'center',
+            marginBottom: 24,
+        },
+        subtitle: {
+            fontSize: 20,
+            fontFamily: 'Nunito_400Regular',
+            textAlign: 'center',
+            color: '#555',
+        },
+        highlightedText: {
+            fontWeight: 'bold',
+            fontStyle: 'italic'
+        },
+        heroImage: {
+            width: 305,
+            height: 285,
+            objectFit: "contain"
+        },
+        custonButton: {
+            padding: 14,
+            borderRadius: 40,
+            width: 300
+        }
+    });
     return (
         <SafeAreaView style={style.safeArea}>
             <View style={style.container}>
@@ -21,12 +62,12 @@ export default function WelcomePage() {
             </View>
             <Image source={WelcomeHero} style={style.heroImage}></Image>
             <TouchableOpacity>
-            <LinearGradient
-                colors={theme.colors.primaryGradient}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={style.custonButton}
-            >
+                <LinearGradient
+                    colors={theme.colors.primaryGradient}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={style.custonButton}
+                >
                     <Link href="homePage" style={{ color: "#fff", fontSize: 20, textAlign: 'center', fontFamily: 'Nunito_700Bold' }}>
                         Criar minha lista!
                     </Link>
@@ -36,42 +77,3 @@ export default function WelcomePage() {
     );
 }
 
-const style = StyleSheet.create({
-    safeArea: {
-        flex: 1,
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-        paddingVertical: 30
-    },
-    container: {
-        alignItems: 'center',
-        paddingHorizontal: 20,
-    },
-    title: {
-        fontSize: 32,
-        fontFamily: 'Nunito_700Bold',
-        textAlign: 'center',
-        marginBottom: 24,
-    },
-    subtitle: {
-        fontSize: 20,
-        fontFamily: 'Nunito_400Regular',
-        textAlign: 'center',
-        color: '#555',
-    },
-    highlightedText: {
-        fontWeight: 'bold',
-        fontStyle: 'italic'
-    },
-    heroImage: {
-        width: 305,
-        height: 285,
-        objectFit: "contain"
-    },
-    custonButton: {
-        padding: 14,
-        borderRadius: 40,
-        width: 300
-    }
-});

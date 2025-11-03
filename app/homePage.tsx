@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Pressable, Modal, KeyboardAvoidingView, Platform, TextInput } from 'react-native';
-import theme from '../app/theme';
+import { useTheme } from '../context/ThemeContext';
 import ListCard from '../components/ListCard';
 import { Plus } from 'lucide-react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
@@ -10,6 +10,107 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ListInterface } from '../types/list';
 
 export default function HomePage() {
+    const { theme } = useTheme();
+
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            backgroundColor: theme.colors.background,
+        },
+        scrollContent: {
+            paddingTop: 16,
+            paddingHorizontal: 10,
+            paddingBottom: 100,
+        },
+        pageTitle: {
+            fontSize: 24,
+            fontWeight: 'bold',
+            color: theme.colors.text,
+            margin: 16,
+            marginTop: 24,
+        },
+        actionBtn: {
+            position: "absolute",
+            bottom: 60,
+            right: 16,
+            shadowColor: '#000',
+            width: 65,
+            height: 65,
+            borderRadius: 70,
+            justifyContent: 'center',
+            alignItems: 'center',
+            elevation: 4,
+            shadowOpacity: 0.3,
+            shadowRadius: 4,
+            shadowOffset: { height: 2, width: 0 },
+        }
+    });
+
+    const modalStyles = StyleSheet.create({
+        overlay: {
+            flex: 1,
+            backgroundColor: 'rgba(0, 0, 0, 0.4)',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%'
+        },
+        container: {
+            backgroundColor: 'white',
+            padding: 24,
+            borderRadius: 12,
+            width: '90%',
+            elevation: 10,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
+        },
+        title: {
+            fontSize: 20,
+            fontWeight: 'bold',
+            color: theme.colors.text,
+            marginBottom: 16,
+            textAlign: 'center',
+        },
+        input: {
+            width: '100%',
+            height: 50,
+            borderColor: '#ddd',
+            borderWidth: 1,
+            borderRadius: 8,
+            paddingHorizontal: 15,
+            marginBottom: 20,
+            fontSize: 16,
+            backgroundColor: '#f9f9f9',
+        },
+        buttonRow: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+        },
+        button: {
+            paddingVertical: 12,
+            borderRadius: 8,
+            flex: 1,
+            alignItems: 'center',
+        },
+        cancelButton: {
+            backgroundColor: '#f0f0f0',
+            marginRight: 10,
+        },
+        cancelButtonText: {
+            color: '#333',
+            fontWeight: 'bold',
+            fontSize: 16,
+        },
+        saveButton: {
+            backgroundColor: theme.colors.primary,
+        },
+        saveButtonText: {
+            color: 'white',
+            fontWeight: 'bold',
+            fontSize: 16,
+        },
+    });
     const router = useRouter();
     const db = useSQLiteContext();
 
@@ -200,102 +301,3 @@ export default function HomePage() {
 }
 
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: theme.colors.background,
-    },
-    scrollContent: {
-        paddingTop: 16,
-        paddingHorizontal: 10,
-        paddingBottom: 100,
-    },
-    pageTitle: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: theme.colors.text,
-        margin: 16,
-        marginTop: 24,
-    },
-    actionBtn: {
-        position: "absolute",
-        bottom: 60,
-        right: 16,
-        shadowColor: '#000',
-        width: 65,
-        height: 65,
-        borderRadius: 70,
-        justifyContent: 'center',
-        alignItems: 'center',
-        elevation: 4,
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-        shadowOffset: { height: 2, width: 0 },
-    }
-});
-
-const modalStyles = StyleSheet.create({
-    overlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%'
-    },
-    container: {
-        backgroundColor: 'white',
-        padding: 24,
-        borderRadius: 12,
-        width: '90%',
-        elevation: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: theme.colors.text,
-        marginBottom: 16,
-        textAlign: 'center',
-    },
-    input: {
-        width: '100%',
-        height: 50,
-        borderColor: '#ddd',
-        borderWidth: 1,
-        borderRadius: 8,
-        paddingHorizontal: 15,
-        marginBottom: 20,
-        fontSize: 16,
-        backgroundColor: '#f9f9f9',
-    },
-    buttonRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    button: {
-        paddingVertical: 12,
-        borderRadius: 8,
-        flex: 1,
-        alignItems: 'center',
-    },
-    cancelButton: {
-        backgroundColor: '#f0f0f0',
-        marginRight: 10,
-    },
-    cancelButtonText: {
-        color: '#333',
-        fontWeight: 'bold',
-        fontSize: 16,
-    },
-    saveButton: {
-        backgroundColor: theme.colors.primary,
-    },
-    saveButtonText: {
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: 16,
-    },
-});

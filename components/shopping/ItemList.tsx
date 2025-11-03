@@ -1,16 +1,59 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Checkbox } from 'expo-checkbox';
-import theme from "../../app/theme";
 import { Pencil, Trash } from "lucide-react-native";
 import { ItemListInterface } from "../../types/list";
+import { useTheme } from "../../context/ThemeContext";
 
 interface ItemListProps {
-    item: ItemListInterface; 
+    item: ItemListInterface;
     onToggleChecked: (itemId: number, newCheckedState: boolean) => void;
 }
 
 export default function ItemList({ item, onToggleChecked }: ItemListProps) {
-
+    const { theme } = useTheme();
+    const styles = StyleSheet.create({
+        container: {
+            paddingVertical: 8,
+            paddingHorizontal: 12,
+            width: '100%',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            borderRadius: 6,
+            backgroundColor: '#fff',
+            borderWidth: 1,
+            borderColor: '#eaeaeaff',
+            marginBottom: 8,
+        },
+        leftContainer: {
+            flexDirection: 'row',
+            gap: 5,
+            alignItems: 'center',
+        },
+        name: {
+            fontSize: 18,
+            fontWeight: '400',
+            marginLeft: 2,
+        },
+        nameChecked: {
+            textDecorationLine: 'line-through',
+            color: theme.colors.text2,
+        },
+        info: {
+            fontSize: 14,
+            color: theme.colors.text2,
+            fontWeight: '400',
+        },
+        checkbox: {
+            padding: 10,
+            marginRight: 8,
+        },
+        actionBtns: {
+            flexDirection: 'row',
+            gap: 24,
+        }
+    });
+    
     const handleValueChange = () => {
         onToggleChecked(item.id, !item.is_checked);
     };
@@ -44,45 +87,3 @@ export default function ItemList({ item, onToggleChecked }: ItemListProps) {
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        paddingVertical: 8,
-        paddingHorizontal: 12,
-        width: '100%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        borderRadius: 6,
-        backgroundColor: '#fff',
-        borderWidth: 1,
-        borderColor: '#eaeaeaff',
-        marginBottom: 8,
-    },
-    leftContainer: {
-        flexDirection: 'row',
-        gap: 5,
-        alignItems: 'center',
-    },
-    name: {
-        fontSize: 18,
-        fontWeight: '400',
-        marginLeft: 2,
-    },
-    nameChecked: {
-        textDecorationLine: 'line-through',
-        color: theme.colors.text2,
-    },
-    info: {
-        fontSize: 14,
-        color: theme.colors.text2,
-        fontWeight: '400',
-    },
-    checkbox: {
-        padding: 10,
-        marginRight: 8,
-    },
-    actionBtns: {
-        flexDirection: 'row',
-        gap: 24,
-    }
-});

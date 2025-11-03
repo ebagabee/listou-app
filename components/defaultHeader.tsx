@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArrowLeft, Settings2 } from "lucide-react-native";
-import theme from "../app/theme";
+import { useTheme } from "../context/ThemeContext";
 import { useNavigation, useRouter } from "expo-router";
 
 interface propsInterface {
@@ -13,6 +13,35 @@ interface propsInterface {
 export default function DefaultHeader({ title, back, settings = true }: propsInterface) {
   const navigation = useNavigation();
   const router = useRouter();
+  const { theme } = useTheme();
+
+  const styles = StyleSheet.create({
+    safeArea: {
+      backgroundColor: '#fff',
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.08,
+      shadowRadius: 3.84,
+      elevation: 5,
+    },
+    headerContainer: {
+      padding: 16,
+      paddingHorizontal: 16,
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: "space-between",
+      alignItems: 'center',
+      backgroundColor: '#fff',
+    },
+    logoText: {
+      fontSize: 20,
+      fontWeight: "500",
+      color: theme.colors.text,
+    }
+  });
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
@@ -37,30 +66,3 @@ export default function DefaultHeader({ title, back, settings = true }: propsInt
 }
 
 
-const styles = StyleSheet.create({
-    safeArea: {
-        backgroundColor: '#fff', 
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.08,
-        shadowRadius: 3.84,
-        elevation: 5,
-},
-    headerContainer: {
-        padding: 16,
-        paddingHorizontal: 16,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: "space-between",
-        alignItems: 'center',
-        backgroundColor: '#fff',
-    },
-    logoText: {
-        fontSize: 20,
-         fontWeight: "500",
-         color: theme.colors.text,
-    }
-});

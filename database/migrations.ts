@@ -15,5 +15,10 @@ export async function createTables(db: any) {
       position INTEGER DEFAULT 0,
       FOREIGN KEY (list_id) REFERENCES lists(id) ON DELETE CASCADE
     );
+
+    CREATE TABLE IF NOT EXISTS preferences (
+      key TEXT PRIMARY KEY NOT NULL,
+      value TEXT NOT NULL
+    );
   `);
 }

@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet, Pressable } from "react-native";
 import { MoreVertical, Trash, Copy, Pencil } from "lucide-react-native";
 import { useState } from "react";
-import theme from "../app/theme";
+import { useTheme } from "../context/ThemeContext";
 
 interface ListCardProps {
   title: string;
@@ -26,6 +26,72 @@ export default function ListCard({
   isMenuOpen,
   onMenuToggle,
 }: ListCardProps) {
+  const { theme } = useTheme();
+
+  const styles = StyleSheet.create({
+    wrapper: {
+      position: 'relative',
+      width: '100%',
+      alignItems: 'center',
+    },
+    card: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      backgroundColor: '#fff',
+      borderRadius: 8,
+      padding: 16,
+      width: '96%',
+      borderWidth: 1,
+      borderColor: '#eaeaeaff',
+      marginVertical: 8,
+      zIndex: 1,
+    },
+    mainContent: {
+      flex: 1,
+      marginRight: 10,
+    },
+    title: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: theme.colors.text,
+      marginBottom: 16,
+    },
+    subtitle: {
+      fontSize: 14,
+      color: theme.colors.text3,
+      fontWeight: '500',
+    },
+    menuButton: {
+      justifyContent: 'center',
+      padding: 4,
+      zIndex: 2,
+    },
+    menu: {
+      position: 'absolute',
+      top: 60,
+      right: 24,
+      backgroundColor: '#fff',
+      borderRadius: 6,
+      elevation: 6,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
+      zIndex: 999,
+    },
+    menuItemContent: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 10,
+      paddingHorizontal: 14,
+    },
+    menuText: {
+      fontSize: 16,
+      marginRight: 8,
+    },
+  });
 
   const handleDeletePress = () => {
     onDelete();
@@ -97,67 +163,3 @@ export default function ListCard({
   );
 }
 
-const styles = StyleSheet.create({
-  wrapper: {
-    position: 'relative',
-    width: '100%',
-    alignItems: 'center',
-  },
-  card: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 16,
-    width: '96%',
-    borderWidth: 1,
-    borderColor: '#eaeaeaff',
-    marginVertical: 8,
-    zIndex: 1,
-  },
-  mainContent: {
-    flex: 1,
-    marginRight: 10,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: theme.colors.text,
-    marginBottom: 16,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: theme.colors.text3,
-    fontWeight: '500',
-  },
-  menuButton: {
-    justifyContent: 'center',
-    padding: 4,
-    zIndex: 2,
-  },
-  menu: {
-    position: 'absolute',
-    top: 60,
-    right: 24,
-    backgroundColor: '#fff',
-    borderRadius: 6,
-    elevation: 6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    zIndex: 999,
-  },
-  menuItemContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-  },
-  menuText: {
-    fontSize: 16,
-    marginRight: 8,
-  },
-});

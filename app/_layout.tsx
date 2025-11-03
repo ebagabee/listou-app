@@ -1,9 +1,10 @@
 import { SplashScreen, Stack } from "expo-router";
 import { useFonts, Nunito_400Regular, Nunito_700Bold, Nunito_500Medium } from '@expo-google-fonts/nunito';
-import { useEffect } from "react"; 
+import { useEffect } from "react";
 import DefaultHeader from "../components/defaultHeader";
 import { SQLiteProvider } from "expo-sqlite";
 import { createTables } from "../database/migrations";
+import { ThemeProvider } from "../context/ThemeContext";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -29,7 +30,7 @@ export default function RootLayout() {
 
     return (
         <SQLiteProvider databaseName="listou.db" onInit={initializeDatabase}>
-            <Layout /> 
+            <Layout />
         </SQLiteProvider>
     );
 }
@@ -41,20 +42,22 @@ function Layout() {
     }, []);
 
     return (
-        <Stack>
-            <Stack.Screen
-                name="welcomePage"
-                options={{
-                    headerShown: false,
-                }}
-            />
+        <ThemeProvider>
+            <Stack>
+                <Stack.Screen
+                    name="welcomePage"
+                    options={{
+                        headerShown: false,
+                    }}
+                />
 
-            <Stack.Screen
-                name="homePage"
-                options={{
-                    header: () => <DefaultHeader />
-                }}
-            />
-        </Stack>
+                <Stack.Screen
+                    name="homePage"
+                    options={{
+                        header: () => <DefaultHeader />
+                    }}
+                />
+            </Stack>
+        </ThemeProvider>
     );
 }
