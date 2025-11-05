@@ -6,18 +6,20 @@ import tinycolor from "tinycolor2";
 type ThemeType = {
     colors: {
         primary: string;
+        primaryDisabled: string;
         negative: string;
         text: string;
         text2: string;
         text3: string;
         background: string;
-        primaryGradient: readonly [string, string, string]; 
+        primaryGradient: readonly [string, string, string];
     };
 };
 
 const defaultTheme: ThemeType = {
     colors: {
         primary: "#FF730F",
+        primaryDisabled: "#FFBA88",
         negative: "#FF5252",
         text: "#000",
         text2: "#5A5A5A",
@@ -35,20 +37,22 @@ type ThemeContextType = {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const generateGradient = (baseColor: string): readonly [string, string, string] => {
+const generateDerivedColors = (baseColor: string) => {
     const color = tinycolor(baseColor);
-    const colorA = color.clone().darken(10).toHexString(); 
-    const colorB = color.clone().lighten(10).toHexString(); 
-    
-    return [colorA, colorB, colorA] as const;
-};
+    const colorA = color.clone().darken(10).toHexString();
+    const colorB = color.clone().lighten(10).toHexString();
 
+    const disabledColor = color.clone().lighten(25).toHexString();
+
+    return {
+        gradient: [colorA, colorB, colorA] as const,
+        disabled: disabledColor
+    };
+};
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
     const db = useSQLiteContext();
-    
     const [theme, setTheme] = useState<ThemeType>(defaultTheme);
-    
     const [isLoadingTheme, setIsLoadingTheme] = useState(true);
 
     useEffect(() => {
@@ -57,14 +61,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
                 const savedColor = await shoppingListDB.getPreference(db, "theme_primary");
 
                 if (savedColor) {
-                    const savedGradient = generateGradient(savedColor);
-                    
+                    const derived = generateDerivedColors(savedColor);
+
                     setTheme((prevTheme) => ({
                         ...prevTheme,
                         colors: {
                             ...prevTheme.colors,
                             primary: savedColor,
-                            primaryGradient: savedGradient, 
+                            primaryDisabled: derived.disabled,
+                            primaryGradient: derived.gradient,
                         },
                     }));
                 }
@@ -82,14 +87,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         try {
             await shoppingListDB.setPreference(db, "theme_primary", newPrimaryColor);
 
-            const newGradient = generateGradient(newPrimaryColor);
+            const derived = generateDerivedColors(newPrimaryColor);
 
             setTheme((prevTheme) => ({
                 ...prevTheme,
                 colors: {
                     ...prevTheme.colors,
                     primary: newPrimaryColor,
-                    primaryGradient: newGradient, 
+                    primaryDisabled: derived.disabled,
+                    primaryGradient: derived.gradient,
                 },
             }));
         } catch (e) {
