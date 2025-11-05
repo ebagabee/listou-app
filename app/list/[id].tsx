@@ -157,7 +157,7 @@ export default function ListDetailPage() {
       backgroundColor: theme.colors.primary,
     },
     addButtonDisabled: {
-      backgroundColor: "#d6d6d6",
+      backgroundColor: "#FFBA88",
     },
     addText: {
       color: "#fff",
