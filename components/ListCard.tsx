@@ -155,10 +155,9 @@ export default function ListCard({
 
       {isMenuOpen && (
         <View style={styles.menu}>
-            {/* ITENS FIXOS */}
             <Pressable onPress={handleRenamePress} android_ripple={{color: '#ddd'}}>
                 <View style={styles.menuItemContent}>
-                    <Text style={styles.menuText}>Renomear</Text>
+                    <Text style={styles.menuText}>Renomear </Text>
                     <Pencil size={18} color={theme.colors.text} />
                 </View>
             </Pressable>
