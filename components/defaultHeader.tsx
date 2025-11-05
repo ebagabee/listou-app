@@ -17,15 +17,17 @@ export default function DefaultHeader({ title, back, settings = true }: propsInt
 
   const styles = StyleSheet.create({
     safeArea: {
-      backgroundColor: '#fff',
+      backgroundColor: theme.colors.card,
       shadowColor: "#000",
       shadowOffset: {
         width: 0,
         height: 2,
       },
-      shadowOpacity: 0.08,
+      shadowOpacity: theme.isDark ? 0.3 : 0.08,
       shadowRadius: 3.84,
       elevation: 5,
+      borderBottomWidth: theme.isDark ? 1 : 0,
+      borderBottomColor: '#333',
     },
     headerContainer: {
       padding: 16,
@@ -34,7 +36,7 @@ export default function DefaultHeader({ title, back, settings = true }: propsInt
       flexDirection: 'row',
       justifyContent: "space-between",
       alignItems: 'center',
-      backgroundColor: '#fff',
+      backgroundColor: theme.colors.card,
     },
     logoText: {
       fontSize: 20,
@@ -48,7 +50,7 @@ export default function DefaultHeader({ title, back, settings = true }: propsInt
       <View style={styles.headerContainer}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
           {back ? (
-            <Pressable onPress={() => (navigation as any).goBack()}>
+            <Pressable onPress={() => (navigation as any).goBack()} hitSlop={8}>
               <ArrowLeft size={24} color={theme.colors.text} />
             </Pressable>
           ) : null}
@@ -56,7 +58,7 @@ export default function DefaultHeader({ title, back, settings = true }: propsInt
         </View>
 
         {settings ? (
-          <Pressable onPress={() => router.push("/preferences/preferencesPage")}>
+          <Pressable onPress={() => router.push("/preferences/preferencesPage")} hitSlop={8}>
             <Settings2 size={26} color={theme.colors.text} />
           </Pressable>
         ) : null}
@@ -64,5 +66,3 @@ export default function DefaultHeader({ title, back, settings = true }: propsInt
     </SafeAreaView>
   );
 }
-
-

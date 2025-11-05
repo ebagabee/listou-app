@@ -25,7 +25,6 @@ export default function ListCard({
   onMenuToggle,
 }: ListCardProps) {
   const { theme } = useTheme();
-
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
   useEffect(() => {
@@ -44,12 +43,12 @@ export default function ListCard({
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'flex-start',
-      backgroundColor: '#fff',
+      backgroundColor: theme.colors.card,
       borderRadius: 8,
       padding: 16,
       width: '96%',
       borderWidth: 1,
-      borderColor: '#eaeaeaff',
+      borderColor: theme.isDark ? '#333' : '#eaeaea',
       marginVertical: 8,
       zIndex: 1,
     },
@@ -77,7 +76,7 @@ export default function ListCard({
       position: 'absolute',
       top: 60,
       right: 24,
-      backgroundColor: '#fff',
+      backgroundColor: theme.colors.card,
       borderRadius: 8,
       elevation: 6,
       shadowColor: '#000',
@@ -86,7 +85,9 @@ export default function ListCard({
       shadowRadius: 4,
       zIndex: 999,
       minWidth: 150,
-      overflow: 'hidden'
+      overflow: 'hidden',
+      borderWidth: theme.isDark ? 1 : 0,
+      borderColor: '#333',
     },
     menuItemContent: {
       flexDirection: 'row',
@@ -101,10 +102,10 @@ export default function ListCard({
       color: theme.colors.text,
     },
     confirmingContainer: {
-        backgroundColor: '#dcfce7',
+        backgroundColor: theme.isDark ? '#052e16' : '#dcfce7',
     },
     confirmingText: {
-        color: '#15803d',
+        color: theme.isDark ? '#4ade80' : '#15803d',
         fontWeight: 'bold',
     }
   });
@@ -155,14 +156,14 @@ export default function ListCard({
 
       {isMenuOpen && (
         <View style={styles.menu}>
-            <Pressable onPress={handleRenamePress} android_ripple={{color: '#ddd'}}>
+            <Pressable onPress={handleRenamePress} android_ripple={{color: theme.isDark ? '#444' : '#ddd'}}>
                 <View style={styles.menuItemContent}>
-                    <Text style={styles.menuText}>Renomear </Text>
+                    <Text style={styles.menuText}>Renomear</Text>
                     <Pencil size={18} color={theme.colors.text} />
                 </View>
             </Pressable>
 
-            <Pressable onPress={handleDuplicatePress} android_ripple={{color: '#ddd'}}>
+            <Pressable onPress={handleDuplicatePress} android_ripple={{color: theme.isDark ? '#444' : '#ddd'}}>
                 <View style={styles.menuItemContent}>
                     <Text style={styles.menuText}>Duplicar</Text>
                     <Copy size={18} color={theme.colors.text} />
@@ -171,7 +172,7 @@ export default function ListCard({
 
             <Pressable 
                 onPress={handleDeletePress} 
-                android_ripple={{ color: isConfirmingDelete ? '#bbf7d0' : '#fee2e2' }}
+                android_ripple={{ color: isConfirmingDelete ? (theme.isDark ? '#064e3b' : '#bbf7d0') : (theme.isDark ? '#450a0a' : '#fee2e2') }}
             >
                 <View style={[
                     styles.menuItemContent, 
@@ -181,11 +182,11 @@ export default function ListCard({
                         styles.menuText, 
                         isConfirmingDelete && styles.confirmingText
                     ]}>
-                        {isConfirmingDelete ? "Confirmar " : "Excluir "}
+                        {isConfirmingDelete ? "Confirmar" : "Excluir"}
                     </Text>
                     
                     {isConfirmingDelete ? (
-                        <Check size={18} color="#15803d" />
+                        <Check size={18} color={theme.isDark ? '#4ade80' : '#15803d'} />
                     ) : (
                         <Trash size={18} color={theme.colors.text} />
                     )}

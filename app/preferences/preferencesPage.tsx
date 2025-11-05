@@ -1,5 +1,5 @@
 import React, { useLayoutEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Switch, ScrollView } from "react-native";
 import { useTheme } from "../../context/ThemeContext";
 import { useNavigation } from "expo-router";
 import DefaultHeader from "../../components/defaultHeader";
@@ -10,11 +10,11 @@ interface ThemeOptionProps {
 }
 
 export default function PreferencesPage() {
-  const { theme, setAppTheme } = useTheme();
+  const { theme, setAppTheme, toggleThemeMode } = useTheme();
 
   const THEME_BLUE = "#3498DB";
   const THEME_ORANGE = "#FF730F";
-  const THEME_PINK = "#ff3d87ff";
+  const THEME_PINK = "#ff6d85ff";
 
   const activeColor = theme.colors.primary;
   const navigation = useNavigation();
@@ -28,38 +28,47 @@ export default function PreferencesPage() {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors.background || "#f5f5f5",
+      backgroundColor: theme.colors.background,
+    },
+    content: {
       padding: 24,
     },
-    title: {
-      fontSize: 20,
+    section: {
+      marginBottom: 32,
+    },
+    sectionTitle: {
+      fontSize: 18,
       fontWeight: "bold",
       color: theme.colors.text,
-      marginBottom: 12,
+      marginBottom: 16,
+    },
+    card: {
+      backgroundColor: theme.colors.card,
+      borderRadius: 16,
+      padding: 8,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.05,
+      shadowRadius: 8,
+      elevation: 2,
     },
     themeButton: {
       flexDirection: "row",
       alignItems: "center",
-      backgroundColor: "#ffffff",
-      padding: 16,
-      borderRadius: 16,
-      marginBottom: 12,
-      borderWidth: 1,
-      borderColor: "transparent",
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.05,
-      shadowRadius: 4,
-      elevation: 2,
+      padding: 12,
+      borderRadius: 12,
+      marginVertical: 4,
     },
     themeButtonActive: {
-      borderColor: theme.colors.primary,
+      backgroundColor: theme.isDark ? "#333333" : "#F0F0F0",
     },
     colorPreview: {
-      width: 24,
-      height: 24,
-      borderRadius: 12,
+      width: 28,
+      height: 28,
+      borderRadius: 14,
       marginRight: 12,
+      borderWidth: 2,
+      borderColor: theme.colors.card,
     },
     themeButtonText: {
       fontSize: 16,
@@ -72,6 +81,13 @@ export default function PreferencesPage() {
       fontWeight: "500",
       color: theme.colors.primary,
     },
+    rowOption: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      padding: 12,
+      borderRadius: 12,
+    },
   });
 
   const ThemeOption = ({ color, label }: ThemeOptionProps) => {
@@ -81,7 +97,7 @@ export default function PreferencesPage() {
       <TouchableOpacity
         style={[styles.themeButton, isActive && styles.themeButtonActive]}
         onPress={() => setAppTheme(color)}
-        activeOpacity={0.8}
+        activeOpacity={0.7}
         disabled={isActive}
       >
         <View style={[styles.colorPreview, { backgroundColor: color }]} />
@@ -94,13 +110,34 @@ export default function PreferencesPage() {
   };
 
   return (
-    <View style={styles.container}>
-      <View>
-        <Text style={styles.title}>Temas</Text>
-        <ThemeOption color={THEME_BLUE} label="Azul" />
-        <ThemeOption color={THEME_ORANGE} label="Laranja (Padrão)" />
-        <ThemeOption color={THEME_PINK} label="Rosa Claro" />
+    <ScrollView style={styles.container}>
+      <View style={styles.content}>
+        
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Aparência</Text>
+          <View style={styles.card}>
+            <View style={styles.rowOption}>
+              <Text style={styles.themeButtonText}>Modo Escuro</Text>
+              <Switch
+                value={theme.isDark}
+                onValueChange={toggleThemeMode}
+                trackColor={{ false: "#767577", true: theme.colors.primaryDisabled }}
+                thumbColor={theme.isDark ? theme.colors.primary : "#f4f3f4"}
+              />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Cor Principal</Text>
+          <View style={styles.card}>
+            <ThemeOption color={THEME_BLUE} label="Azul" />
+            <ThemeOption color={THEME_PINK} label="Rosa" />
+            <ThemeOption color={THEME_ORANGE} label="Laranja (Padrão)" />
+          </View>
+        </View>
+
       </View>
-    </View>
+    </ScrollView>
   );
 }

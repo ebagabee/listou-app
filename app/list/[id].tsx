@@ -37,20 +37,23 @@ export default function ListDetailPage() {
       flex: 1,
       paddingHorizontal: 16,
       paddingTop: 12,
+      backgroundColor: theme.colors.background,
     },
     headerSummary: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      backgroundColor: "#ffffff",
+      backgroundColor: theme.colors.card,
       borderRadius: 12,
       padding: 12,
       elevation: 2,
       shadowColor: "#000",
-      shadowOpacity: 0.05,
+      shadowOpacity: theme.isDark ? 0.2 : 0.05,
       shadowRadius: 6,
       shadowOffset: { width: 0, height: 2 },
       marginBottom: 12,
+      borderWidth: theme.isDark ? 1 : 0,
+      borderColor: '#333',
     },
     summaryBox: {
       flex: 1,
@@ -59,7 +62,7 @@ export default function ListDetailPage() {
     divider: {
       width: 1,
       height: 36,
-      backgroundColor: "#f0f0f0",
+      backgroundColor: theme.isDark ? "#333" : "#f0f0f0",
       marginHorizontal: 8,
     },
     summaryLabel: {
@@ -95,15 +98,17 @@ export default function ListDetailPage() {
     },
     formContainer: {
       width: "100%",
-      backgroundColor: "#fff",
+      backgroundColor: theme.colors.card,
       borderRadius: 12,
       padding: 16,
       marginBottom: 12,
       elevation: 2,
       shadowColor: "#000",
-      shadowOpacity: 0.03,
+      shadowOpacity: theme.isDark ? 0.2 : 0.03,
       shadowRadius: 6,
       shadowOffset: { width: 0, height: 2 },
+      borderWidth: theme.isDark ? 1 : 0,
+      borderColor: '#333',
     },
     fieldLabel: {
       fontSize: 14,
@@ -114,13 +119,13 @@ export default function ListDetailPage() {
     input: {
       width: "100%",
       height: 48,
-      borderColor: "#e6e6e6",
+      borderColor: theme.isDark ? "#444" : "#e6e6e6",
       borderWidth: 1,
       borderRadius: 8,
       paddingHorizontal: 12,
       marginBottom: 8,
       fontSize: 15,
-      backgroundColor: "theme.colors.background",
+      backgroundColor: theme.isDark ? "#2a2a2a" : theme.colors.background,
       color: theme.colors.text,
     },
     row: {
@@ -146,7 +151,7 @@ export default function ListDetailPage() {
       alignItems: "center",
     },
     cancelButton: {
-      backgroundColor: "#f5f5f5",
+      backgroundColor: theme.isDark ? "#333" : "#f5f5f5",
       marginRight: 10,
     },
     cancelText: {
@@ -204,7 +209,7 @@ export default function ListDetailPage() {
       width: 64,
       height: 64,
       borderRadius: 16,
-      backgroundColor: "#fff",
+      backgroundColor: theme.colors.card,
       justifyContent: "center",
       alignItems: "center",
       elevation: 3,
@@ -220,7 +225,8 @@ export default function ListDetailPage() {
     heroImage: {
       width: 220,
       height: 220,
-      objectFit: "contain"
+      objectFit: "contain",
+      opacity: theme.isDark ? 0.8 : 1,
     },
   });
 
@@ -493,4 +499,3 @@ export default function ListDetailPage() {
     </KeyboardAvoidingView>
   );
 }
-

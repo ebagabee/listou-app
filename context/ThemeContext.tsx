@@ -3,7 +3,24 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, 
 import * as shoppingListDB from "../database/shoppingList";
 import tinycolor from "tinycolor2";
 
+const lightModeColors = {
+    background: "#FBFBFB",
+    text: "#000000",
+    text2: "#5A5A5A",
+    text3: "#00000060",
+    card: "#FFFFFF",
+};
+
+const darkModeColors = {
+    background: "#121212",
+    text: "#FFFFFF",
+    text2: "#B0B0B0",
+    text3: "#FFFFFF60",
+    card: "#1E1E1E",
+};
+
 type ThemeType = {
+    isDark: boolean;
     colors: {
         primary: string;
         primaryDisabled: string;
@@ -12,43 +29,56 @@ type ThemeType = {
         text2: string;
         text3: string;
         background: string;
+        card: string;
         primaryGradient: readonly [string, string, string];
     };
-};
-
-const defaultTheme: ThemeType = {
-    colors: {
-        primary: "#FF730F",
-        primaryDisabled: "#FFBA88",
-        negative: "#FF5252",
-        text: "#000",
-        text2: "#5A5A5A",
-        text3: "#00000060",
-        background: "#FBFBFB",
-        primaryGradient: ["#FF5900", "#FF9258", "#FF5900"],
-    },
 };
 
 type ThemeContextType = {
     theme: ThemeType;
     setAppTheme: (newPrimaryColor: string) => Promise<void>;
+    toggleThemeMode: () => Promise<void>;
     isLoadingTheme: boolean;
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const generateDerivedColors = (baseColor: string) => {
+const generateDerivedColors = (baseColor: string, isDark: boolean) => {
     const color = tinycolor(baseColor);
     const colorA = color.clone().darken(10).toHexString();
     const colorB = color.clone().lighten(10).toHexString();
 
-    const disabledColor = color.clone().lighten(25).toHexString();
+    let disabledColor;
+    if (isDark) {
+        disabledColor = color.clone().darken(30).desaturate(50).toHexString();
+    } else {
+        disabledColor = color.clone().lighten(25).toHexString();
+    }
 
     return {
         gradient: [colorA, colorB, colorA] as const,
         disabled: disabledColor
     };
 };
+
+const buildTheme = (primaryColor: string, isDark: boolean): ThemeType => {
+    const derived = generateDerivedColors(primaryColor, isDark);
+    const baseColors = isDark ? darkModeColors : lightModeColors;
+
+    return {
+        isDark,
+        colors: {
+            ...baseColors,
+            primary: primaryColor,
+            primaryDisabled: derived.disabled,
+            primaryGradient: derived.gradient,
+            negative: "#FF5252",
+        },
+    };
+};
+
+const defaultPrimary = "#FF730F";
+const defaultTheme: ThemeType = buildTheme(defaultPrimary, false);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
     const db = useSQLiteContext();
@@ -58,21 +88,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         async function loadTheme() {
             try {
-                const savedColor = await shoppingListDB.getPreference(db, "theme_primary");
+                const [savedColor, savedMode] = await Promise.all([
+                    shoppingListDB.getPreference(db, "theme_primary"),
+                    shoppingListDB.getPreference(db, "theme_mode")
+                ]);
 
-                if (savedColor) {
-                    const derived = generateDerivedColors(savedColor);
+                const primary = savedColor || defaultPrimary;
+                const isDark = savedMode === "dark";
 
-                    setTheme((prevTheme) => ({
-                        ...prevTheme,
-                        colors: {
-                            ...prevTheme.colors,
-                            primary: savedColor,
-                            primaryDisabled: derived.disabled,
-                            primaryGradient: derived.gradient,
-                        },
-                    }));
-                }
+                setTheme(buildTheme(primary, isDark));
             } catch (e) {
                 console.error("Erro ao carregar tema:", e);
             } finally {
@@ -86,28 +110,28 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const setAppTheme = useCallback(async (newPrimaryColor: string) => {
         try {
             await shoppingListDB.setPreference(db, "theme_primary", newPrimaryColor);
-
-            const derived = generateDerivedColors(newPrimaryColor);
-
-            setTheme((prevTheme) => ({
-                ...prevTheme,
-                colors: {
-                    ...prevTheme.colors,
-                    primary: newPrimaryColor,
-                    primaryDisabled: derived.disabled,
-                    primaryGradient: derived.gradient,
-                },
-            }));
+            setTheme(buildTheme(newPrimaryColor, theme.isDark));
         } catch (e) {
-            console.error("Erro ao salvar tema:", e);
+            console.error("Erro ao salvar cor do tema:", e);
         }
-    }, [db]);
+    }, [db, theme.isDark]);
+
+    const toggleThemeMode = useCallback(async () => {
+        try {
+            const newModeIsDark = !theme.isDark;
+            await shoppingListDB.setPreference(db, "theme_mode", newModeIsDark ? "dark" : "light");
+            setTheme(buildTheme(theme.colors.primary, newModeIsDark));
+        } catch (e) {
+            console.error("Erro ao salvar modo do tema:", e);
+        }
+    }, [db, theme.isDark, theme.colors.primary]);
 
     const value = useMemo(() => ({
         theme,
         setAppTheme,
+        toggleThemeMode,
         isLoadingTheme,
-    }), [theme, setAppTheme, isLoadingTheme]);
+    }), [theme, setAppTheme, toggleThemeMode, isLoadingTheme]);
 
     if (isLoadingTheme) {
         return null;
