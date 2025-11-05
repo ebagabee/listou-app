@@ -258,9 +258,9 @@ export default function HomePage() {
                 onPress={handleCreateListAndNavigate}
             >
                 <LinearGradient
-                    colors={['#FFA879', '#FF5900']}
-                    start={{ x: 0, y: 0.5 }}
-                    end={{ x: 1, y: 0.5 }}
+                    colors={theme.colors.primaryGradient}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
                     style={styles.actionBtn}
                 >
                     <Plus size={32} color="white" strokeWidth={3} />

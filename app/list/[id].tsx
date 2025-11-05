@@ -157,7 +157,7 @@ export default function ListDetailPage() {
       backgroundColor: theme.colors.primary,
     },
     addButtonDisabled: {
-      backgroundColor: "#d6d6d6",
+      backgroundColor: "#FFBA88",
     },
     addText: {
       color: "#fff",
@@ -442,7 +442,13 @@ export default function ListDetailPage() {
                 disabled={!canAddItem}
                 style={({ pressed }) => [
                   styles.formButton,
-                  canAddItem ? styles.addButton : styles.addButtonDisabled,
+
+                  {
+                    backgroundColor: canAddItem
+                      ? theme.colors.primary
+                      : theme.colors.primaryDisabled
+                  },
+
                   pressed && canAddItem && styles.pressed,
                 ]}
                 accessibilityRole="button"
