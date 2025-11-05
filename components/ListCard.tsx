@@ -1,17 +1,15 @@
 import { Text, View, StyleSheet, Pressable } from "react-native";
-import { MoreVertical, Trash, Copy, Pencil } from "lucide-react-native";
-import { useState } from "react";
+import { MoreVertical, Trash, Copy, Pencil, Check } from "lucide-react-native";
+import { useEffect, useState } from "react";
 import { useTheme } from "../context/ThemeContext";
 
 interface ListCardProps {
   title: string;
   itemsPreview: string;
-
   onPress: () => void;
   onDelete: () => void;
   onDuplicate?: () => void;
   onRename?: () => void;
-
   isMenuOpen: boolean;
   onMenuToggle: () => void;
 }
@@ -27,6 +25,14 @@ export default function ListCard({
   onMenuToggle,
 }: ListCardProps) {
   const { theme } = useTheme();
+
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+
+  useEffect(() => {
+    if (!isMenuOpen) {
+      setIsConfirmingDelete(false);
+    }
+  }, [isMenuOpen])
 
   const styles = StyleSheet.create({
     wrapper: {
@@ -72,29 +78,39 @@ export default function ListCard({
       top: 60,
       right: 24,
       backgroundColor: '#fff',
-      borderRadius: 6,
+      borderRadius: 8,
       elevation: 6,
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.2,
       shadowRadius: 4,
       zIndex: 999,
+      minWidth: 150,
+      overflow: 'hidden'
     },
     menuItemContent: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingVertical: 10,
-      paddingHorizontal: 14,
+      paddingVertical: 12,
+      paddingHorizontal: 16,
     },
     menuText: {
       fontSize: 16,
       marginRight: 8,
+      color: theme.colors.text,
     },
+    confirmingContainer: {
+        backgroundColor: '#dcfce7',
+    },
+    confirmingText: {
+        color: '#15803d',
+        fontWeight: 'bold',
+    }
   });
 
-  const handleDeletePress = () => {
-    onDelete();
+  const handleRenamePress = () => {
+    onRename?.();
     onMenuToggle();
   };
 
@@ -103,10 +119,14 @@ export default function ListCard({
     onMenuToggle();
   };
 
-  const handleRenamePress = () => {
-    onRename?.();
-    onMenuToggle();
-  };
+  const handleDeletePress = () => {
+    if (isConfirmingDelete) {
+        onDelete();
+        onMenuToggle();
+    } else {
+        setIsConfirmingDelete(true);
+    }
+  }
 
   const handleMainPress = () => {
     if (isMenuOpen) {
@@ -135,31 +155,45 @@ export default function ListCard({
 
       {isMenuOpen && (
         <View style={styles.menu}>
+            {/* ITENS FIXOS */}
+            <Pressable onPress={handleRenamePress} android_ripple={{color: '#ddd'}}>
+                <View style={styles.menuItemContent}>
+                    <Text style={styles.menuText}>Renomear</Text>
+                    <Pencil size={18} color={theme.colors.text} />
+                </View>
+            </Pressable>
 
-          <Pressable onPress={handleRenamePress}>
-            <View style={styles.menuItemContent}>
-              <Text style={styles.menuText}>Renomear </Text>
-              <Pencil size={18} />
-            </View>
-          </Pressable>
+            <Pressable onPress={handleDuplicatePress} android_ripple={{color: '#ddd'}}>
+                <View style={styles.menuItemContent}>
+                    <Text style={styles.menuText}>Duplicar</Text>
+                    <Copy size={18} color={theme.colors.text} />
+                </View>
+            </Pressable>
 
-          <Pressable onPress={handleDuplicatePress}>
-            <View style={styles.menuItemContent}>
-              <Text style={styles.menuText}>Duplicar </Text>
-              <Copy size={18} />
-            </View>
-          </Pressable>
-
-          <Pressable onPress={handleDeletePress}>
-            <View style={styles.menuItemContent}>
-              <Text style={styles.menuText}>Excluir </Text>
-              <Trash size={18} />
-            </View>
-          </Pressable>
-
+            <Pressable 
+                onPress={handleDeletePress} 
+                android_ripple={{ color: isConfirmingDelete ? '#bbf7d0' : '#fee2e2' }}
+            >
+                <View style={[
+                    styles.menuItemContent, 
+                    isConfirmingDelete && styles.confirmingContainer
+                ]}>
+                    <Text style={[
+                        styles.menuText, 
+                        isConfirmingDelete && styles.confirmingText
+                    ]}>
+                        {isConfirmingDelete ? "Confirmar " : "Excluir "}
+                    </Text>
+                    
+                    {isConfirmingDelete ? (
+                        <Check size={18} color="#15803d" />
+                    ) : (
+                        <Trash size={18} color={theme.colors.text} />
+                    )}
+                </View>
+            </Pressable>
         </View>
       )}
     </View>
   );
 }
-
