@@ -14,15 +14,16 @@ export default function PreferencesPage() {
 
   const THEME_BLUE = "#3498DB";
   const THEME_ORANGE = "#FF730F";
+  const THEME_PINK = "#ff3d87ff";
 
   const activeColor = theme.colors.primary;
   const navigation = useNavigation();
 
-    useLayoutEffect(() => {
-      navigation.setOptions({
-        header: () => <DefaultHeader back title='Preferencias' settings={false} />,
-      });
-    }, [navigation]);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      header: () => <DefaultHeader back title='Preferências' settings={false} />,
+    });
+  }, [navigation]);
 
   const styles = StyleSheet.create({
     container: {
@@ -30,26 +31,11 @@ export default function PreferencesPage() {
       backgroundColor: theme.colors.background || "#f5f5f5",
       padding: 24,
     },
-    header: {
-      marginBottom: 32,
-      marginTop: 20,
-    },
     title: {
-      fontSize: 28,
+      fontSize: 20,
       fontWeight: "bold",
       color: theme.colors.text,
-      marginBottom: 8,
-    },
-    subtitle: {
-      fontSize: 16,
-      color: theme.colors.text,
-      opacity: 0.6,
-    },
-    sectionTitle: {
-      fontSize: 18,
-      fontWeight: "600",
-      color: theme.colors.text,
-      marginBottom: 16,
+      marginBottom: 12,
     },
     themeButton: {
       flexDirection: "row",
@@ -58,7 +44,7 @@ export default function PreferencesPage() {
       padding: 16,
       borderRadius: 16,
       marginBottom: 12,
-      borderWidth: 2,
+      borderWidth: 1,
       borderColor: "transparent",
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 1 },
@@ -83,12 +69,11 @@ export default function PreferencesPage() {
     activeLabel: {
       marginLeft: "auto",
       fontSize: 14,
-      fontWeight: "bold",
+      fontWeight: "500",
       color: theme.colors.primary,
     },
   });
 
-  
   const ThemeOption = ({ color, label }: ThemeOptionProps) => {
     const isActive = activeColor === color;
 
@@ -110,16 +95,11 @@ export default function PreferencesPage() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Preferências</Text>
-        <Text style={styles.subtitle}>Personalize a aparência do app</Text>
-      </View>
-
       <View>
-        <Text style={styles.sectionTitle}>Cor Principal</Text>
-        
-        <ThemeOption color={THEME_BLUE} label="Azul Oceano" />
+        <Text style={styles.title}>Temas</Text>
+        <ThemeOption color={THEME_BLUE} label="Azul" />
         <ThemeOption color={THEME_ORANGE} label="Laranja (Padrão)" />
+        <ThemeOption color={THEME_PINK} label="Rosa Claro" />
       </View>
     </View>
   );
