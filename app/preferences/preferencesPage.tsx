@@ -1,11 +1,20 @@
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../../context/ThemeContext";
+import DefaultHeader from "../../components/defaultHeader";
+import { useNavigation } from "expo-router";
 
 export default function PreferencesPage() {
   const { theme } = useTheme();
   const { setAppTheme } = useTheme();
+  const navigation = useNavigation();
+
+    useLayoutEffect(() => {
+      navigation.setOptions({
+        header: () => <DefaultHeader back title='Preferencias' settings={false} />,
+      });
+    }, [navigation]);
   
   const styles = StyleSheet.create({
     safeArea: { flex: 1, backgroundColor: "#fff" },
