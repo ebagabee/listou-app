@@ -111,6 +111,7 @@ export default function HomePage() {
             fontSize: 16,
         },
     });
+
     const router = useRouter();
     const db = useSQLiteContext();
 
@@ -121,20 +122,20 @@ export default function HomePage() {
     const [listToRename, setListToRename] = useState<ListInterface | null>(null);
     const [modalNewName, setModalNewName] = useState("");
 
+    const loadLists = React.useCallback(async () => {
+        try {
+            const allLists = await shoppingListDB.getLists(db);
+            setLists(allLists);
+        } catch (error) {
+            console.error("Erro ao carregar listas:", error);
+            Alert.alert("Erro", "Não foi possível carregar suas listas.");
+        }
+    }, [db]);
+
     useFocusEffect(
         React.useCallback(() => {
-            async function loadLists() {
-                try {
-                    const allLists = await shoppingListDB.getLists(db);
-                    setLists(allLists);
-                } catch (error) {
-                    console.error("Erro ao carregar listas:", error);
-                    Alert.alert("Erro", "Não foi possível carregar suas listas.");
-                }
-            }
-
             loadLists();
-        }, [db])
+        }, [loadLists])
     );
 
     const handleMenuToggle = (listId: number) => {
@@ -202,6 +203,18 @@ export default function HomePage() {
         }
     }
 
+    const handleDeleteList = async (id: number) => {
+        try {
+            await shoppingListDB.deleteList(db, id);
+
+            await loadLists();
+
+            closeActiveMenu();
+        } catch (error) {
+            console.error("Erro ao excluir a lista", error);
+        }
+    }
+
     return (
         <View style={styles.container}>
             <Pressable style={{ flex: 1 }} onPress={closeActiveMenu}>
@@ -223,10 +236,7 @@ export default function HomePage() {
                                         params: { listName: list.name }
                                     })}
 
-                                    onDelete={() => {
-                                        console.log("teste");
-                                        closeActiveMenu();
-                                    }}
+                                    onDelete={() => handleDeleteList(list.id)}
 
                                     onRename={() => handleRenamePress(list)}
 
