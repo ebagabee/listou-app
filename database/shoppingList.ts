@@ -16,6 +16,12 @@ export async function updateListName(db: any, listId: number, newName: string) {
   );
 }
 
+export async function deleteList(db: any, listId: number) {
+  return db.runAsync(
+    'DELETE FROM lists WHERE id = ?', [listId]
+  );
+}
+
 // Items
 export async function getItems(db: any, listId: number) {
   const allRows = await db.getAllAsync(
