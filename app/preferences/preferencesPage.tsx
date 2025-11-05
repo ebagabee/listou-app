@@ -80,6 +80,7 @@ export default function PreferencesPage() {
     },
   });
 
+  
   const ThemeOption = ({ color, label }: ThemeOptionProps) => {
     const isActive = activeColor === color;
 
