@@ -229,7 +229,7 @@ export default function HomePage() {
                                 <ListCard
                                     key={list.id}
                                     title={list.name}
-                                    itemsPreview="JAJA EU COLOCO DINAMICO ISSO"
+                                    // itemsPreview="JAJA EU COLOCO DINAMICO ISSO"
 
                                     onPress={() => router.push({
                                         pathname: `/list/${list.id}`,

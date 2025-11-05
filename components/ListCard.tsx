@@ -5,7 +5,7 @@ import { useTheme } from "../context/ThemeContext";
 
 interface ListCardProps {
   title: string;
-  itemsPreview: string;
+  itemsPreview?: string;
   onPress: () => void;
   onDelete: () => void;
   onDuplicate?: () => void;
