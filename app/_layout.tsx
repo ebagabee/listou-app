@@ -4,7 +4,8 @@ import { useEffect } from "react";
 import DefaultHeader from "../components/defaultHeader";
 import { SQLiteProvider } from "expo-sqlite";
 import { createTables } from "../database/migrations";
-import { ThemeProvider } from "../context/ThemeContext";
+import { ThemeProvider, useTheme } from "../context/ThemeContext";
+import * as NavigationBar from 'expo-navigation-bar';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -30,22 +31,27 @@ export default function RootLayout() {
 
     return (
         <SQLiteProvider databaseName="listou.db" onInit={initializeDatabase}>
+            <ThemeProvider>
             <Layout />
+            </ThemeProvider>
         </SQLiteProvider>
     );
 }
 
 function Layout() {
-
+    const {theme} = useTheme();
 
     useEffect(() => {
         console.log("Fontes e DB prontos. Escondendo splash screen.");
         SplashScreen.hideAsync();
     }, []);
 
+    useEffect(() => {
+        NavigationBar.setButtonStyleAsync(theme.isDark ? 'light' : 'dark');
+    }, [theme]);
+
 
     return (
-        <ThemeProvider>
             <Stack>
                 <Stack.Screen
                     name="welcomePage"
@@ -61,6 +67,5 @@ function Layout() {
                     }}
                 />
             </Stack>
-        </ThemeProvider>
     );
 }
