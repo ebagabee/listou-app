@@ -35,9 +35,12 @@ export default function ListDetailPage() {
     },
     container: {
       flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    innerContainer: {
+      flex: 1,
       paddingHorizontal: 16,
       paddingTop: 12,
-      backgroundColor: theme.colors.background,
     },
     headerSummary: {
       flexDirection: "row",
@@ -368,137 +371,143 @@ export default function ListDetailPage() {
   }).format(totalListPrice);
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
-      <View style={styles.headerSummary}>
-        <View style={styles.summaryBox}>
-          <Text style={styles.summaryLabel}>Itens</Text>
-          <Text style={styles.summaryNumber} accessibilityLabel={`${totalItemsCount} itens`}>
-            {totalItemsCount}
-          </Text>
-        </View>
-
-        <View style={styles.divider} />
-
-        <View style={styles.summaryBox}>
-          <Text style={styles.summaryLabel}>Total</Text>
-          <Text style={styles.summaryNumber} accessibilityLabel={`Total ${formattedTotal}`}>
-            {formattedTotal}
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.content}>
-        {isFormVisible ? (
-          <View style={styles.formContainer}>
-            <Text style={styles.fieldLabel}>Novo item</Text>
-            <TextInput
-              placeholder="Nome do item"
-              placeholderTextColor={theme.colors.text3}
-              style={styles.input}
-              value={itemName}
-              onChangeText={(t) => setItemName(t)}
-              returnKeyType="next"
-              accessible
-              accessibilityLabel="Nome do item"
-              autoFocus
-            />
-
-            <View style={styles.row}>
-              <View style={[styles.half]}>
-                <Text style={styles.fieldLabel}>Quantidade</Text>
-                <TextInput
-                  placeholder="1"
-                  placeholderTextColor={theme.colors.text3}
-                  keyboardType="numeric"
-                  style={[styles.input, styles.inputSmall]}
-                  value={quantity}
-                  onChangeText={(t) => setQuantity(t.replace(/[^0-9,.\-]/g, ""))}
-                  accessible
-                  accessibilityLabel="Quantidade opcional"
-                />
-              </View>
-
-              <View style={[styles.half]}>
-                <Text style={styles.fieldLabel}>Preço</Text>
-                <TextInput
-                  placeholder="0,00"
-                  placeholderTextColor={theme.colors.text3}
-                  keyboardType="decimal-pad"
-                  style={[styles.input, styles.inputSmall]}
-                  value={price}
-                  onChangeText={(t) => setPrice(t.replace(/[^0-9,.,]/g, "").replace(/\./g, "").replace(/,/, "."))}
-                  accessible
-                  accessibilityLabel="Preço opcional"
-                />
-              </View>
-            </View>
-
-            <View style={styles.buttonRow}>
-              <Pressable
-                onPress={handleCancel}
-                style={({ pressed }) => [styles.formButton, styles.cancelButton, pressed && styles.pressed]}
-                accessibilityRole="button"
-                accessibilityLabel="Cancelar adição"
-              >
-                <Text style={styles.cancelText}>Cancelar</Text>
-              </Pressable>
-
-              <Pressable
-                onPress={handleAddItem}
-                disabled={!canAddItem}
-                style={({ pressed }) => [
-                  styles.formButton,
-
-                  {
-                    backgroundColor: canAddItem
-                      ? theme.colors.primary
-                      : theme.colors.primaryDisabled
-                  },
-
-                  pressed && canAddItem && styles.pressed,
-                ]}
-                accessibilityRole="button"
-                accessibilityState={{ disabled: !canAddItem }}
-                accessibilityLabel="Adicionar item"
-              >
-                <Text style={canAddItem ? styles.addText : styles.addTextDisabled}>
-                  {loadingAction ? "Adicionando..." : "Adicionar"}
-                </Text>
-              </Pressable>
-            </View>
+    <View style={styles.container}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === "ios" ? "padding" : "height"} 
+        style={styles.innerContainer}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+      >
+        <View style={styles.headerSummary}>
+          <View style={styles.summaryBox}>
+            <Text style={styles.summaryLabel}>Itens</Text>
+            <Text style={styles.summaryNumber} accessibilityLabel={`${totalItemsCount} itens`}>
+              {totalItemsCount}
+            </Text>
           </View>
-        ) : (
-          <TouchableOpacity
-            style={styles.addFloating}
-            onPress={() => setFormVisible(true)}
-            activeOpacity={0.85}
-            accessibilityRole="button"
-            accessibilityLabel="Adicionar novo item"
-          >
-            <Text style={styles.addFloatingText}>+ Adicionar Item</Text>
-          </TouchableOpacity>
-        )}
 
-        <ScrollView
-          style={styles.listContainer}
-          contentContainerStyle={items.length === 0 ? styles.emptyWrapper : undefined}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.colors.primary} />}
-          keyboardShouldPersistTaps="handled"
-        >
-          {items.length > 0 ? (
-            items.map((item) => (
-              <ItemList key={item.id} item={item} onToggleChecked={handleToggleChecked} />
-            ))
-          ) : (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyTitle}>Sua lista está vazia.</Text>
-              <Text style={styles.emptySubtitle}>Toque no botão acima para adicionar um item.</Text>
+          <View style={styles.divider} />
 
-              <Image source={Cart} style={styles.heroImage}></Image>
+          <View style={styles.summaryBox}>
+            <Text style={styles.summaryLabel}>Total</Text>
+            <Text style={styles.summaryNumber} accessibilityLabel={`Total ${formattedTotal}`}>
+              {formattedTotal}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.content}>
+          {isFormVisible ? (
+            <View style={styles.formContainer}>
+              <Text style={styles.fieldLabel}>Novo item</Text>
+              <TextInput
+                placeholder="Nome do item"
+                placeholderTextColor={theme.colors.text3}
+                style={styles.input}
+                value={itemName}
+                onChangeText={(t) => setItemName(t)}
+                returnKeyType="next"
+                accessible
+                accessibilityLabel="Nome do item"
+                autoFocus
+              />
+
+              <View style={styles.row}>
+                <View style={[styles.half]}>
+                  <Text style={styles.fieldLabel}>Quantidade</Text>
+                  <TextInput
+                    placeholder="1"
+                    placeholderTextColor={theme.colors.text3}
+                    keyboardType="numeric"
+                    style={[styles.input, styles.inputSmall]}
+                    value={quantity}
+                    onChangeText={(t) => setQuantity(t.replace(/[^0-9,.\-]/g, ""))}
+                    accessible
+                    accessibilityLabel="Quantidade opcional"
+                  />
+                </View>
+
+                <View style={[styles.half]}>
+                  <Text style={styles.fieldLabel}>Preço</Text>
+                  <TextInput
+                    placeholder="0,00"
+                    placeholderTextColor={theme.colors.text3}
+                    keyboardType="decimal-pad"
+                    style={[styles.input, styles.inputSmall]}
+                    value={price}
+                    onChangeText={(t) => setPrice(t.replace(/[^0-9,.,]/g, "").replace(/\./g, "").replace(/,/, "."))}
+                    accessible
+                    accessibilityLabel="Preço opcional"
+                  />
+                </View>
+              </View>
+
+              <View style={styles.buttonRow}>
+                <Pressable
+                  onPress={handleCancel}
+                  style={({ pressed }) => [styles.formButton, styles.cancelButton, pressed && styles.pressed]}
+                  accessibilityRole="button"
+                  accessibilityLabel="Cancelar adição"
+                >
+                  <Text style={styles.cancelText}>Cancelar</Text>
+                </Pressable>
+
+                <Pressable
+                  onPress={handleAddItem}
+                  disabled={!canAddItem}
+                  style={({ pressed }) => [
+                    styles.formButton,
+
+                    {
+                      backgroundColor: canAddItem
+                        ? theme.colors.primary
+                        : theme.colors.primaryDisabled
+                    },
+
+                    pressed && canAddItem && styles.pressed,
+                  ]}
+                  accessibilityRole="button"
+                  accessibilityState={{ disabled: !canAddItem }}
+                  accessibilityLabel="Adicionar item"
+                >
+                  <Text style={canAddItem ? styles.addText : styles.addTextDisabled}>
+                    {loadingAction ? "Adicionando..." : "Adicionar"}
+                  </Text>
+                </Pressable>
+              </View>
             </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.addFloating}
+              onPress={() => setFormVisible(true)}
+              activeOpacity={0.85}
+              accessibilityRole="button"
+              accessibilityLabel="Adicionar novo item"
+            >
+              <Text style={styles.addFloatingText}>+ Adicionar Item</Text>
+            </TouchableOpacity>
           )}
-        </ScrollView>
-      </View>
-    </KeyboardAvoidingView>
+
+          <ScrollView
+            style={styles.listContainer}
+            contentContainerStyle={items.length === 0 ? styles.emptyWrapper : undefined}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.colors.primary} />}
+            keyboardShouldPersistTaps="handled"
+          >
+            {items.length > 0 ? (
+              items.map((item) => (
+                <ItemList key={item.id} item={item} onToggleChecked={handleToggleChecked} />
+              ))
+            ) : (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyTitle}>Sua lista está vazia.</Text>
+                <Text style={styles.emptySubtitle}>Toque no botão acima para adicionar um item.</Text>
+
+                <Image source={Cart} style={styles.heroImage}></Image>
+              </View>
+            )}
+          </ScrollView>
+        </View>
+      </KeyboardAvoidingView>
+    </View>
   );
 }

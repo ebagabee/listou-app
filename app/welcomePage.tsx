@@ -13,7 +13,7 @@ export default function WelcomePage() {
             flex: 1,
             justifyContent: 'space-between',
             alignItems: 'center',
-            backgroundColor: '#fff',
+            backgroundColor: theme.colors.background,
             paddingVertical: 30
         },
         container: {
@@ -25,12 +25,13 @@ export default function WelcomePage() {
             fontFamily: 'Nunito_700Bold',
             textAlign: 'center',
             marginBottom: 24,
+            color: theme.colors.text,
         },
         subtitle: {
             fontSize: 20,
             fontFamily: 'Nunito_400Regular',
             textAlign: 'center',
-            color: '#555',
+            color: theme.colors.text,
         },
         highlightedText: {
             fontWeight: 'bold',

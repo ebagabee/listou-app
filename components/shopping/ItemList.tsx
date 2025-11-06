@@ -7,9 +7,10 @@ import { useTheme } from "../../context/ThemeContext";
 interface ItemListProps {
     item: ItemListInterface;
     onToggleChecked: (itemId: number, newCheckedState: boolean) => void;
+    onEditClicked: (currentItem: ItemListInterface) => void;
 }
 
-export default function ItemList({ item, onToggleChecked }: ItemListProps) {
+export default function ItemList({ item, onToggleChecked, onEditClicked }: ItemListProps) {
     const { theme } = useTheme();
     const styles = StyleSheet.create({
         container: {
@@ -54,10 +55,14 @@ export default function ItemList({ item, onToggleChecked }: ItemListProps) {
             gap: 24,
         }
     });
-    
+
     const handleValueChange = () => {
         onToggleChecked(item.id, !item.is_checked);
     };
+
+    const handleEdit = () => {
+        onEditClicked(item);
+    }
 
     const quantity = item.quantity || 0;
     const price = (item.price || 0) * quantity;
@@ -81,7 +86,7 @@ export default function ItemList({ item, onToggleChecked }: ItemListProps) {
             </View>
 
             <View style={styles.actionBtns}>
-                <Pencil color={theme.colors.text2} />
+                <Pencil color={theme.colors.text2} onPress={handleEdit} />
                 <Trash color={theme.colors.negative} />
             </View>
         </View>
