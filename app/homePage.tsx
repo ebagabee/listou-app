@@ -43,7 +43,13 @@ export default function HomePage() {
             shadowOpacity: 0.3,
             shadowRadius: 4,
             shadowOffset: { height: 2, width: 0 },
-        }
+        },
+        emptyListText: {
+            color: theme.colors.text2,
+            fontSize: 16,
+            textAlign: 'center',
+            marginTop: 48,
+        },
     });
 
     const modalStyles = StyleSheet.create({
@@ -245,9 +251,8 @@ export default function HomePage() {
                                 />
                             ))
                         ) : (
-                            <Text>Nenhuma lista criada ainda.</Text>
-                        )
-                        }
+                            <Text style={styles.emptyListText}>Nenhuma lista criada ainda.</Text>
+                        )}
                     </View>
 
                 </ScrollView>
@@ -309,5 +314,3 @@ export default function HomePage() {
         </View>
     );
 }
-
-
