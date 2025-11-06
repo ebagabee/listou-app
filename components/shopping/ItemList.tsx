@@ -20,9 +20,9 @@ export default function ItemList({ item, onToggleChecked }: ItemListProps) {
             alignItems: 'center',
             justifyContent: 'space-between',
             borderRadius: 6,
-            backgroundColor: '#fff',
+            backgroundColor: theme.colors.card,
             borderWidth: 1,
-            borderColor: '#eaeaeaff',
+            borderColor: theme.isDark ? '#333' : '#eaeaea',
             marginBottom: 8,
         },
         leftContainer: {
@@ -34,6 +34,7 @@ export default function ItemList({ item, onToggleChecked }: ItemListProps) {
             fontSize: 18,
             fontWeight: '400',
             marginLeft: 2,
+            color: theme.colors.text,
         },
         nameChecked: {
             textDecorationLine: 'line-through',
@@ -69,7 +70,7 @@ export default function ItemList({ item, onToggleChecked }: ItemListProps) {
                     value={item.is_checked}
                     onValueChange={handleValueChange}
                     style={styles.checkbox}
-                    color={item.is_checked ? theme.colors.primary : undefined}
+                    color={item.is_checked ? theme.colors.primary : theme.colors.text3}
                 />
                 <View>
                     <Text style={[styles.name, item.is_checked && styles.nameChecked]}>
@@ -86,4 +87,3 @@ export default function ItemList({ item, onToggleChecked }: ItemListProps) {
         </View>
     );
 }
-
