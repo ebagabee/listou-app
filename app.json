@@ -9,25 +9,25 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/icon.png",
-      "resizeMode": "contain",
+      "image": "./assets/loadscreen.png",
+      "resizeMode": "cover",
       "backgroundColor": "#FF730F"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.listouapp"
+      "bundleIdentifier": "com.gajoy.listouapp"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/loadscreen.png",
+        "backgroundColor": "#FF730F"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.listouapp"
+      "package": "com.gajoy.listouapp"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/icon.png"
     },
     "plugins": [
       "expo-router",

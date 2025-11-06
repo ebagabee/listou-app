@@ -5,6 +5,7 @@ import DefaultHeader from "../components/defaultHeader";
 import { SQLiteProvider } from "expo-sqlite";
 import { createTables } from "../database/migrations";
 import { ThemeProvider } from "../context/ThemeContext";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -30,7 +31,9 @@ export default function RootLayout() {
 
     return (
         <SQLiteProvider databaseName="listou.db" onInit={initializeDatabase}>
-            <Layout />
+            <GestureHandlerRootView>
+                <Layout />
+            </GestureHandlerRootView>
         </SQLiteProvider>
     );
 }
