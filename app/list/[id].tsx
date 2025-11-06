@@ -351,7 +351,10 @@ export default function ListDetailPage() {
     }
   };
 
-  const totalItemsCount = items.length;
+  const totalItemsCount = items.reduce((sum, item) => {
+    const quantity = item.quantity;
+    return sum + quantity! ;
+  }, 0);
 
   const totalListPrice = items.reduce((sum, item) => {
     const price = item.price ?? 0;
