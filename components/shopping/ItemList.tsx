@@ -1,17 +1,21 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Pressable } from "react-native";
 import { Checkbox } from 'expo-checkbox';
-import { Pencil, Trash } from "lucide-react-native";
+import { Pencil, Trash, Check } from "lucide-react-native";
 import { ItemListInterface } from "../../types/list";
 import { useTheme } from "../../context/ThemeContext";
+import { useState } from "react";
 
 interface ItemListProps {
     item: ItemListInterface;
     onToggleChecked: (itemId: number, newCheckedState: boolean) => void;
     onEditClicked: (currentItem: ItemListInterface) => void;
+    onDeleteItem: (itemId: number) => void;
 }
 
-export default function ItemList({ item, onToggleChecked, onEditClicked }: ItemListProps) {
+export default function ItemList({ item, onToggleChecked, onEditClicked, onDeleteItem }: ItemListProps) {
     const { theme } = useTheme();
+    const [confirmingDelete, setConfirmingDelete] = useState(false);
+
     const styles = StyleSheet.create({
         container: {
             paddingVertical: 8,
@@ -30,6 +34,7 @@ export default function ItemList({ item, onToggleChecked, onEditClicked }: ItemL
             flexDirection: 'row',
             gap: 5,
             alignItems: 'center',
+            flex: 1,
         },
         name: {
             fontSize: 18,
@@ -53,7 +58,13 @@ export default function ItemList({ item, onToggleChecked, onEditClicked }: ItemL
         actionBtns: {
             flexDirection: 'row',
             gap: 24,
-        }
+        },
+        actionButton: {
+            padding: 4,
+        },
+        pressed: {
+            opacity: 0.6,
+        },
     });
 
     const handleValueChange = () => {
@@ -62,7 +73,20 @@ export default function ItemList({ item, onToggleChecked, onEditClicked }: ItemL
 
     const handleEdit = () => {
         onEditClicked(item);
-    }
+    };
+
+    const handleDeletePress = () => {
+        setConfirmingDelete(true);
+    };
+
+    const handleConfirmDelete = () => {
+        onDeleteItem(item.id);
+        setConfirmingDelete(false);
+    };
+
+    const handleCancelDelete = () => {
+        setConfirmingDelete(false);
+    };
 
     const quantity = item.quantity || 0;
     const price = (item.price || 0) * quantity;
@@ -77,7 +101,7 @@ export default function ItemList({ item, onToggleChecked, onEditClicked }: ItemL
                     style={styles.checkbox}
                     color={item.is_checked ? theme.colors.primary : theme.colors.text3}
                 />
-                <View>
+                <View style={{ flex: 1 }}>
                     <Text style={[styles.name, item.is_checked && styles.nameChecked]}>
                         {item.name}
                     </Text>
@@ -86,8 +110,45 @@ export default function ItemList({ item, onToggleChecked, onEditClicked }: ItemL
             </View>
 
             <View style={styles.actionBtns}>
-                <Pencil color={theme.colors.text2} onPress={handleEdit} />
-                <Trash color={theme.colors.negative} />
+                {!confirmingDelete ? (
+                    <>
+                        <Pressable
+                            onPress={handleEdit}
+                            style={({ pressed }) => [styles.actionButton, pressed && styles.pressed]}
+                            accessibilityRole="button"
+                            accessibilityLabel="Editar item"
+                        >
+                            <Pencil size={20} color={theme.colors.text2} />
+                        </Pressable>
+                        <Pressable
+                            onPress={handleDeletePress}
+                            style={({ pressed }) => [styles.actionButton, pressed && styles.pressed]}
+                            accessibilityRole="button"
+                            accessibilityLabel="Excluir item"
+                        >
+                            <Trash size={20} color={theme.colors.negative} />
+                        </Pressable>
+                    </>
+                ) : (
+                    <>
+                        <Pressable
+                            onPress={handleCancelDelete}
+                            style={({ pressed }) => [styles.actionButton, pressed && styles.pressed]}
+                            accessibilityRole="button"
+                            accessibilityLabel="Cancelar exclusão"
+                        >
+                            <Trash size={20} color={theme.colors.text3} />
+                        </Pressable>
+                        <Pressable
+                            onPress={handleConfirmDelete}
+                            style={({ pressed }) => [styles.actionButton, pressed && styles.pressed]}
+                            accessibilityRole="button"
+                            accessibilityLabel="Confirmar exclusão"
+                        >
+                            <Check size={20} color="#22c55e" strokeWidth={3} />
+                        </Pressable>
+                    </>
+                )}
             </View>
         </View>
     );

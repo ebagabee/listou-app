@@ -58,6 +58,26 @@ export async function updateItemChecked(db: any, itemId: number, isChecked: bool
   );
 }
 
+export async function updateItem(
+  db: any,
+  itemId: number,
+  name: string,
+  quantity: number,
+  price?: number
+) {
+  return db.runAsync(
+    'UPDATE list_items SET name = ?, quantity = ?, price = ? WHERE id = ?',
+    [name, quantity, price ?? null, itemId]
+  );
+}
+
+export async function deleteItem(db: any, itemId: number) {
+  return db.runAsync(
+    'DELETE FROM list_items WHERE id = ?',
+    [itemId]
+  );
+}
+
 // Preferencias
 export async function setPreference(db: any, key: string, value: string) {
   return db.runAsync(

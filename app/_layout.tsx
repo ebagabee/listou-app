@@ -5,9 +5,6 @@ import DefaultHeader from "../components/defaultHeader";
 import { SQLiteProvider } from "expo-sqlite";
 import { createTables } from "../database/migrations";
 import { ThemeProvider } from "../context/ThemeContext";
-import { StatusBar } from "expo-status-bar";
-import { Platform } from "react-native";
-import * as NavigationBar from 'expo-navigation-bar';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -33,24 +30,19 @@ export default function RootLayout() {
 
     return (
         <SQLiteProvider databaseName="listou.db" onInit={initializeDatabase}>
-                <Layout />
+            <Layout />
         </SQLiteProvider>
     );
 }
 
 function Layout() {
-    
-   
+
+
     useEffect(() => {
         console.log("Fontes e DB prontos. Escondendo splash screen.");
         SplashScreen.hideAsync();
     }, []);
 
-    useEffect(() => {
-        if (Platform.OS === 'android') {
-            NavigationBar.setStyle('dark');
-        }
-    })
 
     return (
         <ThemeProvider>

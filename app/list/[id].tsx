@@ -202,29 +202,6 @@ export default function ListDetailPage() {
       marginBottom: 16,
       textAlign: "center",
     },
-
-    cartInlineContainer: {
-      alignItems: "center",
-      marginTop: 12,
-      marginBottom: 20,
-    },
-    cartInlineButton: {
-      width: 64,
-      height: 64,
-      borderRadius: 16,
-      backgroundColor: theme.colors.card,
-      justifyContent: "center",
-      alignItems: "center",
-      elevation: 3,
-      shadowColor: "#000",
-      shadowOpacity: 0.06,
-      shadowRadius: 6,
-      shadowOffset: { width: 0, height: 3 },
-    },
-    cartInlineImage: {
-      width: 36,
-      height: 36,
-    },
     heroImage: {
       width: 220,
       height: 220,
@@ -238,6 +215,7 @@ export default function ListDetailPage() {
   const navigation = useNavigation();
 
   const [isFormVisible, setFormVisible] = useState(false);
+  const [editingItem, setEditingItem] = useState<ItemListInterface | null>(null);
   const [itemName, setItemName] = useState("");
   const [quantity, setQuantity] = useState("");
   const [price, setPrice] = useState("");
@@ -282,6 +260,7 @@ export default function ListDetailPage() {
     setQuantity("");
     setPrice("");
     setFormVisible(false);
+    setEditingItem(null);
   };
 
   const sanitizeNumberInput = (text: string) =>
@@ -318,14 +297,43 @@ export default function ListDetailPage() {
       const qtyNum = parseQuantity(quantity);
       const priceNum = parsePrice(price);
 
-      await shoppingListDB.addListItem(db, listIdNum, itemName.trim(), qtyNum, priceNum);
+      if (editingItem) {
+        await shoppingListDB.updateItem(
+          db,
+          editingItem.id,
+          itemName.trim(),
+          qtyNum,
+          priceNum
+        );
+      } else {
+        await shoppingListDB.addListItem(db, listIdNum, itemName.trim(), qtyNum, priceNum);
+      }
+
       await loadItems();
       handleCancel();
     } catch (error) {
-      console.error("Erro ao adicionar item:", error);
-      Alert.alert("Erro", "Não foi possível adicionar o item.");
+      console.error("Erro ao salvar item:", error);
+      Alert.alert("Erro", "Não foi possível salvar o item.");
     } finally {
       setLoadingAction(false);
+    }
+  };
+
+  const handleEditItem = (item: ItemListInterface) => {
+    setEditingItem(item);
+    setItemName(item.name);
+    setQuantity(item.quantity ? String(item.quantity) : "");
+    setPrice(item.price ? String(item.price).replace(".", ",") : "");
+    setFormVisible(true);
+  };
+
+  const handleDeleteItem = async (itemId: number) => {
+    try {
+      await shoppingListDB.deleteItem(db, itemId);
+      await loadItems();
+    } catch (error) {
+      console.error("Erro ao excluir item:", error);
+      Alert.alert("Erro", "Não foi possível excluir o item.");
     }
   };
 
@@ -356,7 +364,7 @@ export default function ListDetailPage() {
 
   const totalItemsCount = items.reduce((sum, item) => {
     const quantity = item.quantity;
-    return sum + quantity! ;
+    return sum + quantity!;
   }, 0);
 
   const totalListPrice = items.reduce((sum, item) => {
@@ -372,8 +380,8 @@ export default function ListDetailPage() {
 
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === "ios" ? "padding" : "height"} 
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.innerContainer}
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
       >
@@ -398,7 +406,9 @@ export default function ListDetailPage() {
         <View style={styles.content}>
           {isFormVisible ? (
             <View style={styles.formContainer}>
-              <Text style={styles.fieldLabel}>Novo item</Text>
+              <Text style={styles.fieldLabel}>
+                {editingItem ? "Editar item" : "Novo item"}
+              </Text>
               <TextInput
                 placeholder="Nome do item"
                 placeholderTextColor={theme.colors.text3}
@@ -446,7 +456,7 @@ export default function ListDetailPage() {
                   onPress={handleCancel}
                   style={({ pressed }) => [styles.formButton, styles.cancelButton, pressed && styles.pressed]}
                   accessibilityRole="button"
-                  accessibilityLabel="Cancelar adição"
+                  accessibilityLabel="Cancelar"
                 >
                   <Text style={styles.cancelText}>Cancelar</Text>
                 </Pressable>
@@ -456,21 +466,19 @@ export default function ListDetailPage() {
                   disabled={!canAddItem}
                   style={({ pressed }) => [
                     styles.formButton,
-
                     {
                       backgroundColor: canAddItem
                         ? theme.colors.primary
                         : theme.colors.primaryDisabled
                     },
-
                     pressed && canAddItem && styles.pressed,
                   ]}
                   accessibilityRole="button"
                   accessibilityState={{ disabled: !canAddItem }}
-                  accessibilityLabel="Adicionar item"
+                  accessibilityLabel={editingItem ? "Salvar edição" : "Adicionar item"}
                 >
                   <Text style={canAddItem ? styles.addText : styles.addTextDisabled}>
-                    {loadingAction ? "Adicionando..." : "Adicionar"}
+                    {loadingAction ? "Salvando..." : editingItem ? "Salvar" : "Adicionar"}
                   </Text>
                 </Pressable>
               </View>
@@ -495,13 +503,18 @@ export default function ListDetailPage() {
           >
             {items.length > 0 ? (
               items.map((item) => (
-                <ItemList key={item.id} item={item} onToggleChecked={handleToggleChecked} />
+                <ItemList
+                  key={item.id}
+                  item={item}
+                  onToggleChecked={handleToggleChecked}
+                  onEditClicked={handleEditItem}
+                  onDeleteItem={handleDeleteItem}
+                />
               ))
             ) : (
               <View style={styles.emptyState}>
                 <Text style={styles.emptyTitle}>Sua lista está vazia.</Text>
                 <Text style={styles.emptySubtitle}>Toque no botão acima para adicionar um item.</Text>
-
                 <Image source={Cart} style={styles.heroImage}></Image>
               </View>
             )}

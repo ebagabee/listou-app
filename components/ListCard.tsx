@@ -158,14 +158,14 @@ export default function ListCard({
         <View style={styles.menu}>
             <Pressable onPress={handleRenamePress} android_ripple={{color: theme.isDark ? '#444' : '#ddd'}}>
                 <View style={styles.menuItemContent}>
-                    <Text style={styles.menuText}>Renomear</Text>
+                    <Text style={styles.menuText}>Renomear </Text>
                     <Pencil size={18} color={theme.colors.text} />
                 </View>
             </Pressable>
 
             <Pressable onPress={handleDuplicatePress} android_ripple={{color: theme.isDark ? '#444' : '#ddd'}}>
                 <View style={styles.menuItemContent}>
-                    <Text style={styles.menuText}>Duplicar</Text>
+                    <Text style={styles.menuText}>Duplicar </Text>
                     <Copy size={18} color={theme.colors.text} />
                 </View>
             </Pressable>
@@ -182,7 +182,7 @@ export default function ListCard({
                         styles.menuText, 
                         isConfirmingDelete && styles.confirmingText
                     ]}>
-                        {isConfirmingDelete ? "Confirmar" : "Excluir"}
+                        {isConfirmingDelete ? "Confirmar " : "Excluir "}
                     </Text>
                     
                     {isConfirmingDelete ? (
