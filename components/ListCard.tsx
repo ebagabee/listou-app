@@ -163,12 +163,12 @@ export default function ListCard({
                 </View>
             </Pressable>
 
-            <Pressable onPress={handleDuplicatePress} android_ripple={{color: theme.isDark ? '#444' : '#ddd'}}>
+            {/* <Pressable onPress={handleDuplicatePress} android_ripple={{color: theme.isDark ? '#444' : '#ddd'}}>
                 <View style={styles.menuItemContent}>
                     <Text style={styles.menuText}>Duplicar </Text>
                     <Copy size={18} color={theme.colors.text} />
                 </View>
-            </Pressable>
+            </Pressable> */}
 
             <Pressable 
                 onPress={handleDeletePress} 
