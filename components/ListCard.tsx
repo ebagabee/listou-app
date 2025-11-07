@@ -60,12 +60,12 @@ export default function ListCard({
       fontSize: 18,
       fontWeight: 'bold',
       color: theme.colors.text,
-      marginBottom: 16,
     },
     subtitle: {
       fontSize: 14,
       color: theme.colors.text3,
       fontWeight: '500',
+      marginTop: 6
     },
     menuButton: {
       justifyContent: 'center',
