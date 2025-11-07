@@ -128,6 +128,8 @@ export default function HomePage() {
     const [listToRename, setListToRename] = useState<ListInterface | null>(null);
     const [modalNewName, setModalNewName] = useState("");
 
+    
+
     const loadLists = React.useCallback(async () => {
         try {
             const allLists = await shoppingListDB.getLists(db);

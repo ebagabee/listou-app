@@ -2,11 +2,25 @@ import { View, Text, StyleSheet, Image, Button, TouchableOpacity } from 'react-n
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../context/ThemeContext';
 import WelcomeHero from "../assets/images/welcome-hero.png";
-import { Link } from 'expo-router';
+import {  useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as shoppingListDB from "../database/shoppingList";
+import { useSQLiteContext } from 'expo-sqlite';
 
 export default function WelcomePage() {
     const { theme } = useTheme();
+    const router = useRouter();
+    const db = useSQLiteContext();
+
+    const handleGetStarted = async () => {
+        try {
+            await shoppingListDB.setPreference(db, 'welcome_screen_viewed', 'true');
+            router.replace('/homePage'); 
+        } catch (error) {
+            console.error("Erro ao salvar preferência:", error);
+            router.replace('/homePage');
+        }
+    };
 
     const style = StyleSheet.create({
         safeArea: {
@@ -45,7 +59,14 @@ export default function WelcomePage() {
         custonButton: {
             padding: 14,
             borderRadius: 40,
-            width: 300
+            width: 300,
+            alignItems: 'center'
+        },
+        buttonText: {
+            color: "#fff",
+            fontSize: 20,
+            textAlign: 'center',
+            fontFamily: 'Nunito_700Bold'
         }
     });
     return (
@@ -62,16 +83,16 @@ export default function WelcomePage() {
                 </Text>
             </View>
             <Image source={WelcomeHero} style={style.heroImage}></Image>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleGetStarted}>
                 <LinearGradient
                     colors={theme.colors.primaryGradient}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                     style={style.custonButton}
                 >
-                    <Link href="homePage" style={{ color: "#fff", fontSize: 20, textAlign: 'center', fontFamily: 'Nunito_700Bold' }}>
+                    <Text style={style.buttonText}>
                         Criar minha lista!
-                    </Link>
+                    </Text>
                 </LinearGradient>
             </TouchableOpacity>
         </SafeAreaView>
