@@ -6,7 +6,21 @@ export async function addList(db: any, name: string) {
 
 
 export async function getLists(db: any) {
-  return db.getAllAsync("SELECT * FROM lists");
+  return db.getAllAsync(`
+      SELECT
+        lists.*,
+        (
+          SELECT group_concat(name, ', ')
+          FROM (
+            SELECT name
+            FROM list_items
+            WHERE list_items.list_id = lists.id
+            ORDER BY id DESC
+            LIMIT 4
+          )
+        ) as items_preview
+      FROM lists
+    `)
 }
 
 export async function updateListName(db: any, listId: number, newName: string) {

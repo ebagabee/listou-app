@@ -138,6 +138,8 @@ export default function HomePage() {
         }
     }, [db]);
 
+
+
     useFocusEffect(
         React.useCallback(() => {
             loadLists();
@@ -235,7 +237,7 @@ export default function HomePage() {
                                 <ListCard
                                     key={list.id}
                                     title={list.name}
-                                    // itemsPreview="JAJA EU COLOCO DINAMICO ISSO"
+                                    itemsPreview={list.items_preview + "..." || "Lista vazia"}
 
                                     onPress={() => router.push({
                                         pathname: `/list/${list.id}`,

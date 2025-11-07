@@ -1,6 +1,7 @@
 export interface ListInterface {
     id: number;
     name: string;
+    items_preview?: string;
 }
 
 export interface ItemListInterface {
