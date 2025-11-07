@@ -61,7 +61,7 @@ export default function HomePage() {
             width: '100%'
         },
         container: {
-            backgroundColor: 'white',
+            backgroundColor: theme.colors.background,
             padding: 24,
             borderRadius: 12,
             width: '90%',
@@ -76,7 +76,7 @@ export default function HomePage() {
             fontWeight: 'bold',
             color: theme.colors.text,
             marginBottom: 16,
-            textAlign: 'center',
+            textAlign: 'left',
         },
         input: {
             width: '100%',
