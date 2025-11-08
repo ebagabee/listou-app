@@ -15,7 +15,7 @@ export default function WelcomePage() {
     const handleGetStarted = async () => {
         try {
             await shoppingListDB.setPreference(db, 'welcome_screen_viewed', 'true');
-            router.replace('/homePage'); 
+            router.push('homePage')
         } catch (error) {
             console.error("Erro ao salvar preferência:", error);
             router.replace('/homePage');
